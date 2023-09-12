@@ -1,6 +1,7 @@
 import React from 'react';
 import "./homepage.css"
 import NavBar from './navbar'
+import logo from './assets/logo.png'
 
 function HomePage() {
   return (
@@ -8,9 +9,12 @@ function HomePage() {
       <nav className="navbar">
         <NavBar />
       </nav>
-        <div className="home-page">
+        <img src={logo} alt="Logo" className="logo_main" />
+        <h2> ¿Tienes un evento y quieres ir en tu auto? </h2>
+        <h3> Somos el mejor servicio para que puedas beber alcohol sin preocuparte de conducir al regreso.</h3>
+        <div className="main">
             <header>
-                <h1>Bienvenido a Vuelta Segura</h1>
+                <h1>Inicia sesión para empezar </h1>
             </header>
             <div className="registro">
                 <div className='conductor'>
@@ -26,7 +30,7 @@ function HomePage() {
                     </button>
                 </div>
                 <div className='usuario'>
-                    <h2>Usuario</h2>
+                    <h2>Cliente</h2>
                     <label htmlFor='user_usuario'>Usuario:</label>
                     <li><input id="user_usuario" type="text" placeholder="Ingrese su nombre"></input></li>
                     <br />
