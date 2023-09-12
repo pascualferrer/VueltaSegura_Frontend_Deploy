@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import './HowItWorks.css';
-import userImage from './assets/user.png';
-import choferImage from './assets/chofer.png';
+import userImage from './assets/userIllustration.png';
+import choferImage from './assets/choferIllustration.png';
+import NavBar from './navbar'
 
 
 
@@ -11,6 +12,11 @@ function HowItWorks() {
 
     return (
         <div className="howItWorksContainer">
+            <div className="navbar">
+            <NavBar />
+            </div>
+
+
             <div className="SelectionsContainer">
                 <h1>¿Cómo funciona nuestra App?</h1>
                     <p>
@@ -50,7 +56,7 @@ function HowItWorks() {
                     </section>
 
                     <section className="step">
-                        <h2>Paso 4:¡!Selecciona tus necesidades y cotiza!</h2>
+                        <h2>Paso 4:¡Selecciona tus necesidades y cotiza!</h2>
                         <p>Con nuestro sistema de pago seguro, podrás pagar por el servicio seleccionado de manera rápida y sencilla.</p>
                     </section>
 

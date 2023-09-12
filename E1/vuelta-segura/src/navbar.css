@@ -3,31 +3,27 @@
     padding: 0;
     display: flex;
     align-items: center; /* Centra verticalmente los elementos en la barra de navegación */
-    background-color: #333;
-    position: absolute;
+    background-color: #333; 
+    position: fixed;  /* cambio PELA */
     justify-content: space-between;
     margin-top: 0;
     top: 0;
     left: 0;
     width: 100%;
-    height: 10%
+    height: 60px;
+    z-index: 1000; /* PELA: Para que se vea por encima de todo */
   }
 
-.izquierda {
+.izquierda, .derecha {
     list-style: none;
     display: flex;
     align-items: center; /* Centra verticalmente los elementos en la barra de navegación */
     background-color: #333;
-    height: 10%
+    height: 100%;   /* Cambio PELA: Asegura que ocupen toda la altura del contenedor */
 }
 
 .derecha {
     margin-right: 20px;
-    list-style: none;
-    display: flex;
-    align-items: center; /* Centra verticalmente los elementos en la barra de navegación */
-    background-color: #333;
-    height: 10%
 }
   
   nav ul li {
