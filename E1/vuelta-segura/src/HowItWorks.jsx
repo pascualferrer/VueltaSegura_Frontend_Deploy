@@ -1,5 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import './HowItWorks.css';
+import userImage from './assets/user.png';
+import choferImage from './assets/chofer.png';
+
+
 
 function HowItWorks() {
     const [view, setView] = useState(''); // 'cliente', 'chofer' o ''
@@ -7,25 +11,29 @@ function HowItWorks() {
 
     return (
         <div className="howItWorksContainer">
-            <h1>¿Cómo funciona?</h1>
-                <p>
-                Bienvenido a nuestra aplicación. Aquí te explicaremos paso a paso cómo funciona nuestra plataforma.
-                </p>
+            <div className="SelectionsContainer">
+                <h1>¿Cómo funciona nuestra App?</h1>
+                    <p>
+                    ¡Bienvenido a nuestra aplicación!
+                    <p>
+                    </p> 
+                    Aquí te explicaremos paso a paso cómo funciona nuestra plataforma.
+                    </p>
 
-            <div className="boxContainer">
-                <div className="box" onClick={() => setView('cliente')}>
-                    <img src="./assets/cliente.png" alt="Cliente" />
-                    <p>Soy Usuario</p>
-                </div>
-                <div className="box" onClick={() => setView('chofer')}>
-                    <img src="./assets/chofer.png" alt="Chofer" />
-                    <p>Soy Chofer</p>
+                <div className="boxContainer">
+                    <div className="box" onClick={() => setView('cliente')}>
+                        <img src={userImage} alt="Cliente" />
+                        <p>Soy Usuario</p>
+                    </div>
+                    <div className="box" onClick={() => setView('chofer')}>
+                        <img src={choferImage} alt="Chofer" />
+                        <p>Soy Chofer</p>
+                    </div>
                 </div>
             </div>
-
-            {view === 'cliente' && (
-                <div className="info">
-                    
+            
+            <div className="infoContainer">
+                <div className={view === 'cliente' ? 'info active' : 'info'}>
                     <section className="step">
                         <h2>Paso 1: ¡Registro!</h2>
                         <p>Regístrate en nuestra plataforma proporcionando tus datos básicos.</p>
@@ -37,12 +45,12 @@ function HowItWorks() {
                     </section>
 
                     <section className="step">
-                        <h2>Paso 3: !Selecciona tus necesidades y cotiza!</h2>
+                        <h2>Paso 3: ¡Selecciona tus necesidades y cotiza!</h2>
                         <p>Completa la información requerida para el servicio, y se desplegará el valor que este tendría.</p>
                     </section>
 
                     <section className="step">
-                        <h2>Paso 4: !Selecciona tus necesidades y cotiza!</h2>
+                        <h2>Paso 4:¡!Selecciona tus necesidades y cotiza!</h2>
                         <p>Con nuestro sistema de pago seguro, podrás pagar por el servicio seleccionado de manera rápida y sencilla.</p>
                     </section>
 
@@ -56,16 +64,13 @@ function HowItWorks() {
                         <p>Después de recibir el servicio, puedes evaluar al chofer y dejar tus comentarios para ayudarnos a mejorar.</p>
                     </section>
                 </div>
-            )}
-
-            {view === 'chofer' && (
-                <div className="info">
+                <div className={view === 'chofer' ? 'info active' : 'info'}>
                     <section className="step">
                         <h2>Paso 1: ¡Regístrate y postula!</h2>
                         <p>Regístrate y postula proporcionando los datos requeridos.</p>
                     </section>
                 </div>
-            )}
+            </div>
         </div>
     );
 }
