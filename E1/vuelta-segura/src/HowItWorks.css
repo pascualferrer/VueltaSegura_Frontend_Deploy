@@ -1,6 +1,6 @@
 .selectionContainer {
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid hsl(0, 0%, 80%);
     border-radius: 10px;
     margin-bottom: 20px;
 }
@@ -9,6 +9,7 @@
     padding: 20px;
     border-radius: 10px;
     min-height: 500px;
+    transition: filter 300ms;
 }
 
 .info {
@@ -17,14 +18,26 @@
     display: none; /* Oculta el contenido por defecto */
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
 .info.active {
     display: block;
+    animation: fadeIn 1s ease-in-out forwards;
 }
 
 .howItWorksContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 60px;
 }
 
 .boxContainer {
@@ -41,23 +54,35 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.3s;
+    /*transition: background-color 0.3s;*/
+    z-index: 100;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
 }
-
 
 .box:hover {
-    background-color: #f5f5f5;
+    filter: drop-shadow(0 0 2em #8b8fd3aa);
+    z-index: 1;
 }
+.box.react:hover {
+    filter: drop-shadow(0 0 2em #566e74aa);
+    z-index: 1;
+}
+
 
 .box img {
     max-width: 80%;
     max-height: 80%;
     object-fit: cover;
     margin: auto;
+    z-index: 10;
 }
 
-.box:hover img {
-    filter: grayscale(100%) brightness(150%);
+.img {
+    z-index: 100;
 }
 
-
+.h1 {
+    margin: 25px;
+}

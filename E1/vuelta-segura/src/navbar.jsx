@@ -11,7 +11,7 @@ function NavBar() {
                     <img src={logo} alt="Logo" className="logo" />
                     </li>
                     <li><a href="/">Inicio</a></li>
-                    <li><a href="/acerca">Instrucciones</a></li>
+                    <li><a href="/HowItWorks">Instrucciones</a></li>
                     <li><a href="/contacto">Quiénes somos</a></li>
                 </div>
                 <div className="derecha">
