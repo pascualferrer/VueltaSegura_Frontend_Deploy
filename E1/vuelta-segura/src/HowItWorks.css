@@ -62,11 +62,11 @@
 }
 
 .box:hover {
-    filter: drop-shadow(0 0 2em #8b8fd3aa);
+    filter: drop-shadow(0 0 1em #fafafaaa);
     z-index: 1;
 }
 .box.react:hover {
-    filter: drop-shadow(0 0 2em #566e74aa);
+    filter: drop-shadow(0 0 1em #ffffffaa);
     z-index: 1;
 }
 
@@ -85,4 +85,9 @@
 
 .h1 {
     margin: 25px;
+}
+
+.enlarged {
+    transform: scale(1.2); /* Aumenta el tamaño en un 20% */
+    transition: transform 0.3s ease; /* Agrega una transición suave */
 }

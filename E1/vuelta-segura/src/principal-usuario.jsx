@@ -8,6 +8,11 @@ import "./principal.css"
 
 function PrincipalUsuario() {
     const [view, setView] = useState('');
+    const [isCalendarImageHovered, setIsCalendarImageHovered] = useState(false);
+    const [isNuevoViajeImageHovered, setIsNuevoViajeImageHovered] = useState(false);
+    const [isChatearImageHovered, setIsChatearImageHovered] = useState(false);
+
+
     return (
         <div className="contenedor_principal">
             <nav className="navbar">
@@ -18,15 +23,33 @@ function PrincipalUsuario() {
                 <h1>Seleccione qué desea hacer</h1>
                 <div className="boxContainer">
                     <div className="box" onClick={() => setView('agendar')}>
-                        <img src={coche} alt="viaje" />
+                        <img 
+                            src={coche} 
+                            alt="viaje" 
+                            onMouseEnter={() => setIsNuevoViajeImageHovered(true)}
+                            onMouseLeave={() => setIsNuevoViajeImageHovered(false)} 
+                            className={isNuevoViajeImageHovered ? 'enlarged' : ''}
+                            />
                         <h2>Agendar nuevo viaje</h2>
                     </div>
                     <div className="box" onClick={() => setView('solicitudes')}>
-                        <img src={calendario} alt="calendario" />
+                        <img 
+                            src={calendario} 
+                            alt="disponibilidad" 
+                            onMouseEnter={() => setIsCalendarImageHovered(true)}
+                            onMouseLeave={() => setIsCalendarImageHovered(false)} 
+                            className={isCalendarImageHovered ? 'enlarged' : ''}
+                            />
                         <h2>Ver mis solicitudes</h2>
                     </div>
                     <div className="box" onClick={() => setView('chat')}>
-                        <img src={chat} alt="chat" />
+                        <img 
+                            src={chat} 
+                            alt="chat" 
+                            onMouseEnter={() => setIsChatearImageHovered(true)}
+                            onMouseLeave={() => setIsChatearImageHovered(false)} 
+                            className={isChatearImageHovered ? 'enlarged' : ''}
+                            />
                         <h2>Chatear</h2>
                     </div>
                 </div>

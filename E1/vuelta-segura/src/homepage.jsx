@@ -1,16 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "./homepage.css"
 import NavBar from './navbar'
 import logo from './assets/logo.png'
+import logobn1 from './assets/logo1byn.png'
+import logobn2 from './assets/logo2byn.png'
+import logobn3 from './assets/logo3byn.png'
+import logobn4 from './assets/logo4byn.png'
+
 
 function HomePage() {
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const images = [logobn1, logobn2, logobn3, logobn4];
+
+    const nextImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    };
+
+    const prevImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    };
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            nextImage();
+        }, 5000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [currentImageIndex]);
+
   return (
     <div className="pag">
       <nav className="navbar">
         <NavBar />
       </nav>
-        <img src={logo} alt="Logo" className="logo_main" />
+        <img src={images[currentImageIndex]} alt="Logo" className="logo_main" />
         <h2> ¿Tienes un evento y quieres ir en tu auto? </h2>
         <h3> Somos el mejor servicio para que puedas beber alcohol sin preocuparte de conducir al regreso.</h3>
         

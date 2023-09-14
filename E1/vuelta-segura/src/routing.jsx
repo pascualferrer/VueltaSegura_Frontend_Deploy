@@ -3,6 +3,7 @@ import HowItWorks from './HowItWorks.jsx'
 import App from './App.jsx'
 import PrincipalUsuario from './principal-usuario.jsx';
 import PrincipalChofer from './principal-chofer.jsx';
+import QuienesSomos from './quienes-somos.jsx';
 
 function Routing() {
     return (
@@ -12,6 +13,7 @@ function Routing() {
                 <Route path={'/HowItWorks'} element={<HowItWorks/>}/>
                 <Route path={'/principal-usuario'} element={<PrincipalUsuario/>}/>
                 <Route path={'/principal-chofer'} element={<PrincipalChofer/>}/>
+                <Route path={'/quienes-somos'} element={<QuienesSomos/>}/>
                 <Route path={'/'} element={<App/>}/>
             </Routes>
         </BrowserRouter>

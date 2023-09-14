@@ -12,7 +12,7 @@ function NavBar() {
                     </li>
                     <li><a href="/">Inicio</a></li>
                     <li><a href="/HowItWorks">Instrucciones</a></li>
-                    <li><a href="/contacto">Quiénes somos</a></li>
+                    <li><a href="/quienes-somos">Quiénes somos</a></li>
                 </div>
                 <div className="derecha">
                     <li><a href="/">Iniciar Sesión</a></li>
