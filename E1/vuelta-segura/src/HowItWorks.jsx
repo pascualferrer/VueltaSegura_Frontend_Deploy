@@ -8,8 +8,8 @@ import NavBar from './navbar'
 
 function HowItWorks() {
     const [view, setView] = useState(''); // 'cliente', 'chofer' o ''
-
-
+    const [isUserImageHovered, setIsUserImageHovered] = useState(false);
+    const [isChoferImageHovered, setIsChoferImageHovered] = useState(false);
     return (
         <div className="howItWorksContainer">
             <div className="navbar">
@@ -28,12 +28,24 @@ function HowItWorks() {
 
                 <div className="boxContainer">
                     <div className="box" onClick={() => setView('cliente')}>
-                        <img src={userImage} alt="Cliente" />
-                        <p>Soy Usuario</p>
+                        <img 
+                            src={userImage} 
+                            alt="Cliente"
+                            onMouseEnter={() => setIsUserImageHovered(true)}
+                            onMouseLeave={() => setIsUserImageHovered(false)} 
+                            className={isUserImageHovered ? 'enlarged' : ''}
+                        />
+                        <h2>Soy Usuario</h2>
                     </div>
                     <div className="box" onClick={() => setView('chofer')}>
-                        <img src={choferImage} alt="Chofer" />
-                        <p>Soy Chofer</p>
+                        <img 
+                            src={choferImage} 
+                            alt="Chofer" 
+                            onMouseEnter={() => setIsChoferImageHovered(true)}
+                            onMouseLeave={() => setIsChoferImageHovered(false)} 
+                            className={isChoferImageHovered ? 'enlarged' : ''}
+                        />
+                        <h2>Soy Chofer</h2>
                     </div>
                 </div>
             </div>
@@ -75,6 +87,23 @@ function HowItWorks() {
                         <h2>Paso 1: ¡Regístrate y postula!</h2>
                         <p>Regístrate y postula proporcionando los datos requeridos.</p>
                     </section>
+                    <section className="step">
+                        <h2>Paso 2: ¡Revisa si fuiste aceptado!</h2>
+                        <p>Después de ser aceptado tendrás habilitada la inscripción semanal.</p>
+                    </section>
+                    <section className="step">
+                        <h2>Paso 3: ¡Inscripcion Semanal!</h2>
+                        <p>Podrás inscribir semanalmente tu horario de trabajo para ser asignado a un cliente.</p>
+                    </section>
+                    <section className="step">
+                        <h2>Paso 4: ¡Atento al viaje que se te otorgue!</h2>
+                        <p>Se te asignará un viaje en algún módulo que hayas puesto disponible en la inscripción semanal.</p>
+                    </section>
+                    <section className="step">
+                        <h2>Paso 5: ¡Haz tu viaje!</h2>
+                        <p>Una vez terminado el servicio tendrás la opción de recibir tu pago al instante.</p>
+                    </section>
+
                 </div>
             </div>
         </div>
