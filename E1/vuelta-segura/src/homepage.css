@@ -1,0 +1,67 @@
+#root {
+    width: 100%;
+    top: 0;
+    text-align: center;
+  }
+
+.logo_main {
+    max-width: 100%; /* Establece el ancho máximo de la imagen al 100% del contenedor */
+    height: auto; /* Mantiene la proporción de aspecto de la imagen */
+    display: block; /* Elimina cualquier espacio adicional alrededor de la imagen */
+    margin: 0 auto; /* Centra la imagen horizontalmente */
+    margin-top: 120px;
+    margin-bottom: 30px;
+}
+
+.main {
+    background-color: #474747;
+    padding: 30px 30px;
+}
+
+.registro {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    text-align: center;
+    left: 0;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.conductor, .usuario {
+    list-style: none;
+    text-align: center;
+    align-items: center;
+    flex: 1;
+    margin: 0 1rem;
+    width: 30%;
+
+}
+
+#user_chofer, #user_usuario, #password_chofer, #password_usuario {
+    padding: 10px; /* Añade espacio alrededor del texto dentro del campo */
+    margin-bottom: 10px; /* Agrega espacio entre los campos de entrada */
+    border: 1px solid #ccc; /* Añade un borde */
+    border-radius: 5px; /* Agrega bordes redondeados */
+    width: 40%; /* Haz que los campos de entrada ocupen todo el ancho disponible */
+    box-sizing: border-box; /* Incluye el ancho del borde en el tamaño total */
+}
+
+.boton_usuario, .boton_chofer {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    align-items: center;
+    background-color: #333;
+    position: absolute;
+    margin-top: 20px;
+    left: 0;
+    width: 100%;
+    height: 5%
+  }

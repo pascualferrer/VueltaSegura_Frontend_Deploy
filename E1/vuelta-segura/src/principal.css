@@ -1,0 +1,136 @@
+#root {
+    height: auto;
+}
+
+.contenedor_principal {
+    margin-top: 20px;
+    background-color: #474747;
+    min-height: auto;
+}
+
+.OpcionesContainer {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 30px;
+    margin: 0 auto;
+}
+
+.SeleccionContainer {
+    height: auto;
+    margin: auto;
+    padding: auto;
+}
+
+.step {
+
+    padding: 30px;
+
+}
+
+.tabla_solicitudes {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: auto;
+    margin: 0;
+}
+
+.boxContainer {
+    justify-content: center;
+    align-items: center;
+}
+
+footer {
+    background-color: #333;
+    left: 0;
+    width: 100%;
+    height: 5%;
+    margin: 0;
+  }
+
+.step {
+    text-align: center;
+    padding: 20px;
+}
+
+.dias-semana {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px; /* Espacio entre los elementos */
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.hora {
+    width: 80px; /* Ancho de los campos de hora */
+    margin-top: 5px; /* Separación entre los campos de hora y los nombres de los días */
+}
+
+.enviar {
+    margin-top: 20px; /* Separación entre el formulario y el botón */
+}
+
+
+
+/* Botones e input */
+
+/* Estilos para los campos de entrada de texto */
+.origen, .destino {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px; /* Espacio entre campos de entrada */
+    width: 40%; /* Ocupa todo el ancho disponible */
+  }
+  
+  /* Estilos para los campos de entrada de fecha y hora */
+  .fecha, .hora {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px; /* Espacio entre campos de entrada */
+  }
+  
+  /* Estilos para los campos de entrada cuando están enfocados */
+  .origen:focus,
+  .destino:focus,
+  .hora:focus,
+  .fecha:focus {
+    border-color: #007bff; /* Cambia el color del borde al enfocar */
+    outline: none; /* Quita el contorno predeterminado */
+  }
+  
+  /* Estilos para los campos de entrada cuando se pasan por encima */
+  .origen:hover,
+  .destino:hover,
+  .hora:hover, .fecha:hover{
+    border-color: #999; /* Cambia el color del borde al pasar el cursor */
+  }
+  
+  /* Estilos específicos para el campo de entrada de fecha */
+  .fecha {
+    /* Agrega un ícono de calendario al campo de entrada (puedes reemplazarlo con tu propia imagen de ícono) */
+    background-image: url('calendario-icono.png');
+    background-size: 20px;
+    background-position: calc(100% - 5px) center;
+    background-repeat: no-repeat;
+    padding-right: 30px; /* Espacio para el ícono */
+  }
+  
+  /* Estilos específicos para el campo de entrada de hora */
+  .hora {
+    /* Agrega un ícono de reloj al campo de entrada (puedes reemplazarlo con tu propia imagen de ícono) */
+    background-image: url('reloj-icono.png');
+    background-size: 20px;
+    background-position: calc(100% - 5px) center;
+    background-repeat: no-repeat;
+    padding-right: 30px; /* Espacio para el ícono */
+  }
+  
