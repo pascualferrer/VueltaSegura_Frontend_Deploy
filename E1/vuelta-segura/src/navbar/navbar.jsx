@@ -19,7 +19,7 @@ function NavBar( { login }) {
                 </div>
                 <div className="derecha">
                     <li><a href="/#log-in" onClick={login}> Iniciar Sesión</a></li>
-                    <li><a href="/registro">Crear Cuenta</a></li>
+                    <li><a href="/clientes/registro">Crear Cuenta</a></li>
                 </div>
             </ul>
         </nav>
