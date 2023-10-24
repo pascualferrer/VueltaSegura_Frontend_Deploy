@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import coche from './assets/coche.png';
-import calendario from './assets/calendario.png';
-import chat from './assets/charla.png';
-import NavBar from './navbar';
+import coche from '../assets/coche.png';
+import calendario from '../assets/calendario.png';
+import chat from '../assets/charla.png';
+import NavBar from '../navbar/navbar';
 import "./principal.css"
 
 function PrincipalUsuario() {

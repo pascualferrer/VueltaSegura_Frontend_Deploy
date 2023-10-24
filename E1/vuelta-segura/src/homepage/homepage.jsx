@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "./homepage.css"
-import NavBar from './navbar'
-import logo from './assets/logo.png'
-import logobn1 from './assets/logo1byn.png'
-import logobn2 from './assets/logo2byn.png'
-import logobn3 from './assets/logo3byn.png'
-import logobn4 from './assets/logo4byn.png'
+import NavBar from '../navbar/navbar'
+import logo from '../assets/logo.png'
+import logobn1 from '../assets/logo1byn.png'
+import logobn2 from '../assets/logo2byn.png'
+import logobn3 from '../assets/logo3byn.png'
+import logobn4 from '../assets/logo4byn.png'
+import axios from 'axios';
 
 
 function HomePage() {
@@ -33,16 +34,26 @@ function HomePage() {
         };
     }, [currentImageIndex]);
 
+    //! Completar
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/clientes`)
+            .then((response) => {
+
+            }).catch((error) => {
+                console.log(error);
+            })
+    }, []);
+
   return (
-    <div className="pag">
-      <nav className="navbar">
-        <NavBar />
-      </nav>
+    <div className = "pag">
+        <nav className="navbar">
+            <NavBar />
+        </nav>
         <img src={images[currentImageIndex]} alt="Logo" className="logo_main" />
         <h2> ¿Tienes un evento y quieres ir en tu auto? </h2>
         <h3> Somos el mejor servicio para que puedas beber alcohol sin preocuparte de conducir al regreso.</h3>
         
-        <div className="main">
+        <div id = "log-in" className="main">
             <header>
                 <h1>Inicia sesión para empezar </h1>
             </header>
@@ -82,6 +93,14 @@ function HomePage() {
         </div>
     </div>
   );
+}
+
+export function login() {
+    const login = document.getElementById("log-in");
+
+    if (login) {
+        login.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 export default HomePage;

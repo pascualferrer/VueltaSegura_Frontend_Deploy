@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import historial from './assets/historia.png';
-import calendario from './assets/calendario.png';
-import chat from './assets/charla.png';
-import NavBar from './navbar';
+import historial from '../assets/historia.png';
+import calendario from '../assets/calendario.png';
+import chat from '../assets/charla.png';
+import NavBar from '../navbar/navbar';
 import "./principal.css"
 
 function PrincipalChofer() {

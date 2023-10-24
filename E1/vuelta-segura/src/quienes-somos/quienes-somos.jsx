@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import NavBar from './navbar';
+import NavBar from '../navbar/navbar';
 // CSS
 import './quienes-somos.css';
 
 // Assets
-import userImage from './assets/userIllustration.png';
-import choferImage from './assets/choferIllustration.png';
-import chipImage from './assets/chip.png';
-import seguroImage from './assets/escudo-seguro.png';
-import techSupportImage from './assets/soporte-tecnico.png'; 
-import nosotros1 from './assets/nosotros1.jpg';
-import nosotros2 from './assets/nosotros2.jpg';
-import nosotros3 from './assets/nosotros3.jpg';
+import userImage from '../assets/userIllustration.png';
+import choferImage from '../assets/choferIllustration.png';
+import chipImage from '../assets/chip.png';
+import seguroImage from '../assets/escudo-seguro.png';
+import techSupportImage from '../assets/soporte-tecnico.png'; 
+import nosotros1 from '../assets/nosotros1.jpg';
+import nosotros2 from '../assets/nosotros2.jpg';
+import nosotros3 from '../assets/nosotros3.jpg';
 
 
 

@@ -1,0 +1,74 @@
+/* Estilos generales */
+/* .contenedor_principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    font-family: 'Arial', sans-serif;
+  }
+   */
+  /* .navbar {
+    width: 100%;
+    background-color: #f2f2f2;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+  }
+   */
+   .registro {
+    display: flex;
+    flex-direction: column; /* Alinear los elementos en una columna */
+    align-items: center; /* Centrar los elementos en el eje transversal */
+    justify-content: center; /* Centrar los elementos en el eje principal */
+    font-size: 0.9em;
+    margin: auto;
+    color: #ffff;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+  }
+  
+  .label_registro {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #5aff08;
+  }
+  
+  input {
+    width: 300px;
+    height: 40px;
+    margin-bottom: 20px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+  }
+  
+  button {
+    width: 50%;
+    height: 50px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    margin-top: 30px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  button:active {
+    background-color: #3e8e41;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  

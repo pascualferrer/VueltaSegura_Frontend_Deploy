@@ -1,8 +1,11 @@
-import React from 'react';
-import logo from './assets/logo.png'
+import React, { useEffect } from 'react';
+import logo from '../assets/logo.png'
 import "./navbar.css"
 
-function NavBar() {
+import { login } from '../homepage/homepage';
+
+function NavBar( { login }) {
+
     return (
         <nav>
             <ul className='contenedor'>
@@ -15,13 +18,13 @@ function NavBar() {
                     <li><a href="/quienes-somos">Quiénes somos</a></li>
                 </div>
                 <div className="derecha">
-                    <li><a href="/">Iniciar Sesión</a></li>
-                    <li><a href="/acerca">Crear Cuenta</a></li>
+                    <li><a href="/#log-in" onClick={login}> Iniciar Sesión</a></li>
+                    <li><a href="/registro">Crear Cuenta</a></li>
                 </div>
             </ul>
         </nav>
 
-      );
+    );
 }
     
 export default NavBar;

@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import './HowItWorks.css';
-import userImage from './assets/userIllustration.png';
-import choferImage from './assets/choferIllustration.png';
-import NavBar from './navbar'
+import userImage from '../assets/userIllustration.png';
+import choferImage from '../assets/choferIllustration.png';
+import NavBar from '../navbar/navbar'
 
 
 

@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HowItWorks from './HowItWorks.jsx'
-import App from './App.jsx'
-import PrincipalUsuario from './principal-usuario.jsx';
-import PrincipalChofer from './principal-chofer.jsx';
-import QuienesSomos from './quienes-somos.jsx';
+import HowItWorks from './how-it-works/HowItWorks.jsx'
+import App from './app/App.jsx'
+import PrincipalUsuario from './chofer-usuario/principal-usuario.jsx';
+import PrincipalChofer from './chofer-usuario/principal-chofer.jsx';
+import QuienesSomos from './quienes-somos/quienes-somos.jsx';
+import Registro from './registro/registro.jsx';
 
 function Routing() {
     return (
@@ -14,6 +15,7 @@ function Routing() {
                 <Route path={'/principal-usuario'} element={<PrincipalUsuario/>}/>
                 <Route path={'/principal-chofer'} element={<PrincipalChofer/>}/>
                 <Route path={'/quienes-somos'} element={<QuienesSomos/>}/>
+                <Route path={'/registro'} element={<Registro/>}/>
                 <Route path={'/'} element={<App/>}/>
             </Routes>
         </BrowserRouter>
@@ -21,4 +23,4 @@ function Routing() {
     )
 }
 
-export default Routing
+export default Routing;
