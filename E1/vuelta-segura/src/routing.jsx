@@ -12,7 +12,7 @@ function Routing() {
         <BrowserRouter>
             <Routes>
                 <Route path={'/HowItWorks'} element={<HowItWorks/>}/>
-                <Route path={'/principal-usuario'} element={<PrincipalUsuario/>}/>
+                <Route path={'/principal-cliente'} element={<PrincipalUsuario/>}/>
                 <Route path={'/principal-chofer'} element={<PrincipalChofer/>}/>
                 <Route path={'/quienes-somos'} element={<QuienesSomos/>}/>
                 <Route path={'/clientes/registro'} element={<Registro/>}/>

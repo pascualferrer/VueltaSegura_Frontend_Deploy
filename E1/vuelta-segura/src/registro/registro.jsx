@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import NavBar from '../navbar/navbar';
 import axios from 'axios';
-import "./registro.css"
+import "./registro.css";
+import { useNavigate } from 'react-router-dom';
+
 
 // Assets
 import userImage from '../assets/userIllustration.png';
@@ -19,11 +21,13 @@ const Registro = () => {
     const [contrasena, setContrasena] = useState('');
     const [telefono, setTelefono] = useState('');
 
-    const [view, setView] = useState(''); // 'cliente', 'chofer' o ''
+    const [view, setView] = useState(null); // 'cliente', 'chofer' o ''
     const [isUserImageHovered, setIsUserImageHovered] = useState(false);
     const [isChoferImageHovered, setIsChoferImageHovered] = useState(false);
 
     const [error, setError] = useState('');
+
+    const navigate = useNavigate();  // Inicializa useNavigate
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,11 +36,12 @@ const Registro = () => {
             // Mostrar mensaje de error o realizar otras acciones
             console.error('Todos los campos son obligatorios');
             setError('Todos los campos son obligatorios');
+            setRedirectTo(null);
             return;
         }
 
         //* Obtener el valor del campo oculto
-        const userType = e.target.userType.value;
+        const userType = view;
 
         try {
             const endpoint = userType === 'cliente' ? 'clientes/registro' : 'choferes/registro';
@@ -50,26 +55,33 @@ const Registro = () => {
 
             console.log('Datos enviados con éxito:', response.data);
             setError(null);
+            // Redirigir aquí después de un registro exitoso y sin errores
+            if (setError != null) {
+                if (userType === 'cliente') {
+                    navigate('/principal-cliente');
+                } else if (userType === 'chofer') {
+                    navigate('/principal-chofer');
+                }
+            }
+
         } catch (error) {
             console.error('Error al enviar datos:', error);
-            setError('Error al enviar datos. Por favor, verifica la información.');
+            setError('Error al enviar datos. Por favor, verifica la información. El teléfono e email deben no haber sido registrados');
+            setRedirectTo(null); // Limpiar la redirección en caso de error
         }
     };
+    
 
 return (
     <div className="RegistroContainer">
         <div className="navbar">
         <NavBar />
         </div>
-
-
         <div className="selectionContainer">
             <h1>¡REGÍSTRATE!</h1>
                 <p>
                 ¡Bienvenido a nuestra aplicación!
                 </p> 
-                
-
             <div className="boxContainer">
                 <div className="box" onClick={() => setView('cliente')}>
                     <img 
@@ -94,12 +106,9 @@ return (
             </div>
         </div>
         
-        <div className="infoContainer">
+        <div className="registroContainer">
             <div className={view === 'cliente' ? 'info active' : 'info'}>
                 <section className="step">
-                    {/* !AQui escribir codigo */}
-                
-                    
                     <div id="contenedor_principal">
                         <div id = 'registro'>
                             <h1>Registro Usuario</h1>
@@ -149,7 +158,6 @@ return (
                                     </label>
                                     <br />
                                     <input type="hidden" name="userType" value="cliente" />
-                                    {error && <div className="error-message">{error}</div>}
                                     <button type="submit">Registrarse</button>
                                 </form>
                         </div>
@@ -161,7 +169,6 @@ return (
                     <div id="contenedor_principal">
                         <div id = 'registro'>
                             <h1>Registro Chofer</h1>
-                            <div>
                                 <form className="form-chofer" onSubmit={handleSubmit}>
                                     <label>
                                     <div>    
@@ -214,16 +221,14 @@ return (
                                     <input type="hidden" name="userType" value="chofer" />
                                     <button type="submit">Registrarse</button>
                                 </form>
-                                {error && <div className="error-message">{error}</div>}
-                            </div>
                         </div>
                     </div>
                 </section>
             </div>
+            {error && <div>{error}</div>}
         </div>
     </div>
 );
-  
 };
 
 export default Registro;
