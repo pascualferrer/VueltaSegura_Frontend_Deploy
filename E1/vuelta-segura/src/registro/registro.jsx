@@ -3,6 +3,7 @@ import NavBar from '../navbar/navbar';
 import axios from 'axios';
 import "./registro.css";
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../UserContext';
 
 
 // Assets
@@ -16,6 +17,8 @@ import nosotros2 from '../assets/nosotros2.jpg';
 import nosotros3 from '../assets/nosotros3.jpg';
 
 const Registro = () => {
+    const { user, loginUser, logoutUser } = useUser();
+
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [contrasena, setContrasena] = useState('');
@@ -36,7 +39,6 @@ const Registro = () => {
             // Mostrar mensaje de error o realizar otras acciones
             console.error('Todos los campos son obligatorios');
             setError('Todos los campos son obligatorios');
-            setRedirectTo(null);
             return;
         }
 
@@ -52,10 +54,19 @@ const Registro = () => {
             telefono
             }
             );
-
             console.log('Datos enviados con éxito:', response.data);
             setError(null);
-            // Redirigir aquí después de un registro exitoso y sin errores
+            
+            //* Actualizar contexto del usuario
+            loginUser({
+                id: response.data.id,
+                nombre: response.data.nombre,
+                email: response.data.email,
+                contrasena: response.data.contrasena,
+                telefono: response.data.telefono,
+            });
+
+            //* Redirigir  después de un registro exitoso y sin errores
             if (setError != null) {
                 if (userType === 'cliente') {
                     navigate('/principal-cliente');
@@ -67,7 +78,6 @@ const Registro = () => {
         } catch (error) {
             console.error('Error al enviar datos:', error);
             setError('Error al enviar datos. Por favor, verifica la información. El teléfono e email deben no haber sido registrados');
-            setRedirectTo(null); // Limpiar la redirección en caso de error
         }
     };
     
