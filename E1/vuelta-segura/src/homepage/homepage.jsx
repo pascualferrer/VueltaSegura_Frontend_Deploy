@@ -95,6 +95,7 @@ function HomePage() {
 
                 //* Actualizar contexto del usuario
                 const updatedUserData = {
+                    id: response.data.id,
                     nombre: response.data.nombre,
                     email: response.data.email,
                     contrasena: response.data.contrasena,
