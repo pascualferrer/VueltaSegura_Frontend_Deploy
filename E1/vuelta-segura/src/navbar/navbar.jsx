@@ -6,11 +6,6 @@ import { useUser } from '../UserContext';
 function NavBar() {
     const { user, logout } = useUser();
 
-    useEffect(() => {
-        // Este efecto se ejecutará cada vez que el estado de usuario cambie
-        console.log('Usuario actualizado:', user);
-    }, [user]);
-
     return (
         <nav>
             <ul className='contenedor'>
