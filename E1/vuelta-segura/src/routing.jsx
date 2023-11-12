@@ -10,18 +10,16 @@ import HomePage from './homepage/homepage.jsx';
 
 function Routing() {
     return (
-        <UserProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route path={'/HowItWorks'} element={<HowItWorks />} />
-                    <Route path={'/principal-cliente'} element={<PrincipalUsuario />} />
-                    <Route path={'/principal-chofer'} element={<PrincipalChofer />} />
-                    <Route path={'/quienes-somos'} element={<QuienesSomos />} />
-                    <Route path={'/clientes/registro'} element={<Registro />} />
-                    <Route path={'/'} element={<HomePage />} />
-                </Routes>
-            </BrowserRouter>
-        </UserProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route path={'/HowItWorks'} element={<HowItWorks />} />
+                <Route path={'/principal-cliente'} element={<PrincipalUsuario />} />
+                <Route path={'/principal-chofer'} element={<PrincipalChofer />} />
+                <Route path={'/quienes-somos'} element={<QuienesSomos />} />
+                <Route path={'/registro'} element={<Registro />} />
+                <Route path={'/'} element={<HomePage />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
 

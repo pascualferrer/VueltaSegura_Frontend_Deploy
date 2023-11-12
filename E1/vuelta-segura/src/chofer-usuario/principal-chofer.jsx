@@ -5,17 +5,15 @@ import calendario from '../assets/calendario.png';
 import chat from '../assets/charla.png';
 import NavBar from '../navbar/navbar';
 import "./principal.css"
-import { useUser } from '../UserContext';
 
 function PrincipalChofer() {
-    const { user } = useUser();
 
     const [view, setView] = useState('');
     const [isCalendarImageHovered, setIsCalendarImageHovered] = useState(false);
     const [isHistorialImageHovered, setIsHistorialImageHovered] = useState(false);
     const [isChatearImageHovered, setIsChatearImageHovered] = useState(false);
 
-    console.log('Información del Usuario:', user);
+    //console.log('Información del Usuario:', user);
 
     return (
         <div className="contenedor_principal">
@@ -24,7 +22,7 @@ function PrincipalChofer() {
             </nav>
 
             <div className="OpcionesContainer">
-                {user && ( <h1>Seleccione qué desea hacer, {user.nombre} </h1>)}
+                <h1>Seleccione qué desea hacer </h1>
                 <div className="boxContainer">
                     <div className="box" onClick={() => setView('disponibilidad')}>
                         <img 

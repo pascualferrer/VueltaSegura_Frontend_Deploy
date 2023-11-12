@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useUser } from '../UserContext';
+import React, { useState, useContext, useEffect } from 'react';
+import { AuthContext } from '../auth/AuthContext';
 import { Link } from 'react-router-dom';
 import "./homepage.css"
 import NavBar from '../navbar/navbar'
@@ -14,10 +14,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-
-
 function HomePage() {
-    const { user, loginUser, logoutUser, loading } = useUser();
+    const {token, setToken, user, setUser} = useContext(AuthContext);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -60,57 +58,77 @@ function HomePage() {
 
             if (view == 'cliente') {
 
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/clientes/buscar-por-email`, {
-                    params: { email },
-                });
+                axios.post(`${import.meta.env.VITE_BACKEND_URL}/clientes/login`,
+                    { 
+                        email,
+                        contrasena,
+                    }).then((response) => {
+                        const access_token = response.data.access_token;
+                        setToken(access_token);
+                        console.log('Datos enviados con éxito:', response);
+                        const userData = {
+                            id: response.data.id,
+                            nombre: response.data.nombre,
+                        };
+                        console.log('userData:', userData);
+                        setUser(userData);
+                        navigate('/principal-cliente');
+                    }).catch((error) => {
+                        console.log(error);
+                    })
 
-                console.log('Datos solicitados con éxito:', response.data);
                 setError(null);
 
                 //* Actualizar contexto del usuario
-                const updatedUserData = {
-                    id: response.data.id,
-                    nombre: response.data.nombre,
-                    email: response.data.email,
-                    contrasena: response.data.contrasena,
-                    telefono: response.data.telefono,
-                };
+                //const updatedUserData = {
+                    //id: response.data.id,
+                    //nombre: response.data.nombre,
+                    //email: response.data.email,
+                    //contrasena: response.data.contrasena,
+                    //telefono: response.data.telefono,
+                //};
 
-                console.log('Info usuario:', updatedUserData);
+                //console.log('Info usuario:', updatedUserData);
 
-                loginUser(updatedUserData);
 
-                if (response.data.contrasena === contrasena) {
-                    navigate('/principal-cliente');
-                } else {
-                    setError('Contraseña incorrecta.');
-                }
+                //if (response.data.contrasena === contrasena) {
+                    //navigate('/principal-cliente');
+                //} else {
+                    //setError('Contraseña incorrecta.');
+                //}
             } else if (view == 'chofer') {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/choferes/buscar-por-email`, {
-                    params: { email },
-                });
+                axios.post(`${import.meta.env.VITE_BACKEND_URL}/choferes/login`,
+                    { 
+                        email,
+                        contrasena,
+                    }).then((response) => {
+                        const access_token = response.data.access_token;
+                        setToken(access_token);
+                        console.log('Datos enviados con éxito:', response);
+                        navigate('/principal-chofer');
+                    }).catch((error) => {
+                        console.log(error)
+                    })
 
-                console.log('Datos solicitados con éxito:', response.data);
                 setError(null);
 
                 //* Actualizar contexto del usuario
-                const updatedUserData = {
-                    id: response.data.id,
-                    nombre: response.data.nombre,
-                    email: response.data.email,
-                    contrasena: response.data.contrasena,
-                    telefono: response.data.telefono,
-                };
+                //const updatedUserData = {
+                    //id: response.data.id,
+                    //nombre: response.data.nombre,
+                    //email: response.data.email,
+                    //contrasena: response.data.contrasena,
+                    //telefono: response.data.telefono,
+                //};
 
-                console.log('Info chofer:', updatedUserData);
+                //console.log('Info chofer:', updatedUserData);
 
-                loginUser(updatedUserData);
 
-                if (response.data.contrasena === contrasena) {
-                    navigate('/principal-chofer');
-                } else {
-                    setError('Contraseña incorrecta.');
-                }
+                //if (response.data.contrasena === contrasena) {
+                    //navigate('/principal-chofer');
+                //} else {
+                    //setError('Contraseña incorrecta.');
+                //}
             }
         } catch (error) {
             console.error('Error al enviar datos:', error);
@@ -195,7 +213,7 @@ function HomePage() {
                                             </label>
                                             <br />
                                             <input type="hidden" name="userType" value="cliente" />
-                                            <button type="submit">Registrarse</button>
+                                            <button type="submit">Iniciar Sesión</button>
                                         </form>
                                 </div>
                             </div>
@@ -234,7 +252,7 @@ function HomePage() {
                                             <br />
                                             <br />
                                             <input type="hidden" name="userType" value="chofer" />
-                                            <button type="submit">Registrarse</button>
+                                            <button type="submit">Iniciar Sesión</button>
                                         </form>
                                 </div>
                             </div>

@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import NavBar from '../navbar/navbar';
 import axios from 'axios';
 import "./registro.css";
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../UserContext';
-
+import { AuthContext } from '../auth/AuthContext';
 
 // Assets
 import userImage from '../assets/userIllustration.png';
@@ -17,7 +16,7 @@ import nosotros2 from '../assets/nosotros2.jpg';
 import nosotros3 from '../assets/nosotros3.jpg';
 
 const Registro = () => {
-    const { user, loginUser, logoutUser } = useUser();
+    const {token, setToken, user, setUser} = useContext(AuthContext);
 
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
@@ -46,25 +45,26 @@ const Registro = () => {
         const userType = view;
 
         try {
-            const endpoint = userType === 'cliente' ? 'clientes/registro' : 'choferes/registro';
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, {
-            nombre,
-            email,
-            contrasena,
-            telefono
-            }
-            );
-            console.log('Datos enviados con éxito:', response.data);
-            setError(null);
-            
-            //* Actualizar contexto del usuario
-            loginUser({
-                id: response.data.id,
-                nombre: response.data.nombre,
-                email: response.data.email,
-                contrasena: response.data.contrasena,
-                telefono: response.data.telefono,
-            });
+            const endpoint = userType === 'cliente' ? 'clientes' : 'choferes'; //TODO cambiar para authenticate.js, por ahora implementado para clientes
+            axios.post(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}/signup`, //TODO lo de arriba
+            { 
+                nombre,
+                email,
+                contrasena,
+                telefono
+            }).then((response) => {
+                const access_token = response.data.access_token;
+                setToken(access_token);
+                console.log('Datos enviados con éxito:', response);
+                const userData = {
+                    id: response.data.id,
+                    nombre: response.data.nombre,
+                };
+                console.log('userData:', userData);
+                setUser(userData);
+            }).catch((error) => {
+                console.log(error)
+            })
 
             //* Redirigir  después de un registro exitoso y sin errores
             if (setError != null) {

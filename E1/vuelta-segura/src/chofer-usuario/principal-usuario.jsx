@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import coche from '../assets/coche.png';
 import calendario from '../assets/calendario.png';
 import chat from '../assets/charla.png';
 import NavBar from '../navbar/navbar';
-import { useUser } from '../UserContext';
+import { AuthContext } from "../auth/AuthContext";
 import "./principal.css"
 
 const PrincipalUsuario = () => {
-    const { user, logout } = useUser();
+    const { token, user } = useContext(AuthContext); // Accede al user desde AuthContext
+    const [msg, setMsg] = useState("");
     const [solicitudes, setSolicitudes] = useState([]);
     const [fecha, setFecha] = useState('');
     const [hora, setHora] = useState('');
@@ -24,9 +25,17 @@ const PrincipalUsuario = () => {
     const [error, setError] = useState('');
     const [show, setShow] = useState([]); // Agregado estado para 'show'
 
-    useEffect(() => {
-        const handleShow = async () => { //* Para ver los servicios del cliente
+    const config = {
+            'method' : 'get',
+            'url' : `${import.meta.env.VITE_BACKEND_URL}/scope/protectedCliente`,
+            'headers' : {
+                'Authorization' : `Bearer ${token}`
+            } 
+        }
 
+        useEffect(() => {
+        const handleShow = async () => { //* Para ver los servicios del cliente
+            //? Ver ClienteCheck?
             try {
                 const show = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/servicios/buscar-por-id`, {
                         params: { clienteID: user.id },
@@ -43,7 +52,7 @@ const PrincipalUsuario = () => {
         if (view === 'solicitudes') {
             handleShow();
         }
-    }, [user, view]);
+    }, [view]);
 
     const handleSubmit = async (e) => { //* Para crear servicios
         e.preventDefault();
