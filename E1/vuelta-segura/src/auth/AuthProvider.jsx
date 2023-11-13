@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { useNavigate } from 'react-router-dom';
 
 function AuthProvider({children}) {
     const storedToken = localStorage.getItem("token");
@@ -11,7 +10,7 @@ function AuthProvider({children}) {
 
     useEffect(() => {
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user))
+        localStorage.setItem("user", user)
     }, [token, user])
 
     function logout(){

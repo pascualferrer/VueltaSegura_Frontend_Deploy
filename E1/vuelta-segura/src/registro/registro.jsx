@@ -56,12 +56,28 @@ const Registro = () => {
                 const access_token = response.data.access_token;
                 setToken(access_token);
                 console.log('Datos enviados con éxito:', response);
-                const userData = {
-                    id: response.data.id,
-                    nombre: response.data.nombre,
-                };
-                console.log('userData:', userData);
-                setUser(userData);
+
+                axios.post(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}/login`,
+                    { 
+                        email,
+                        contrasena
+                    }).then((log) => {
+                        const access_token = log.data.access_token;
+                        setToken(access_token);
+                        console.log('Datos enviados con éxito:', log);
+                        const userData = {
+                            id: log.data.id,
+                            nombre: log.data.nombre,
+                        };
+                        console.log('userData:', userData);
+                        setUser(userData);
+                        navigate('/principal-cliente');
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+
+                setError(null);
+
             }).catch((error) => {
                 console.log(error)
             })

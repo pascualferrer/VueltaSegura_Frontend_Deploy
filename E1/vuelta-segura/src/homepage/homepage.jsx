@@ -58,7 +58,7 @@ function HomePage() {
 
             if (view == 'cliente') {
 
-                axios.post(`${import.meta.env.VITE_BACKEND_URL}/clientes/login`,
+                axios.post(`${import.meta.env.VITE_BACKEND_URL}/${view}/login`,
                     { 
                         email,
                         contrasena,
@@ -66,6 +66,8 @@ function HomePage() {
                         const access_token = response.data.access_token;
                         setToken(access_token);
                         console.log('Datos enviados con éxito:', response);
+
+    
                         const userData = {
                             id: response.data.id,
                             nombre: response.data.nombre,
@@ -79,23 +81,7 @@ function HomePage() {
 
                 setError(null);
 
-                //* Actualizar contexto del usuario
-                //const updatedUserData = {
-                    //id: response.data.id,
-                    //nombre: response.data.nombre,
-                    //email: response.data.email,
-                    //contrasena: response.data.contrasena,
-                    //telefono: response.data.telefono,
-                //};
-
-                //console.log('Info usuario:', updatedUserData);
-
-
-                //if (response.data.contrasena === contrasena) {
-                    //navigate('/principal-cliente');
-                //} else {
-                    //setError('Contraseña incorrecta.');
-                //}
+                //! Modificar chofer
             } else if (view == 'chofer') {
                 axios.post(`${import.meta.env.VITE_BACKEND_URL}/choferes/login`,
                     { 
@@ -105,30 +91,19 @@ function HomePage() {
                         const access_token = response.data.access_token;
                         setToken(access_token);
                         console.log('Datos enviados con éxito:', response);
+
+                        const userData = {
+                            id: response.data.id,
+                            nombre: response.data.nombre,
+                        };
+                        console.log('userData:', userData);
+                        setUser(userData);
                         navigate('/principal-chofer');
                     }).catch((error) => {
-                        console.log(error)
+                        console.log(error);
                     })
 
                 setError(null);
-
-                //* Actualizar contexto del usuario
-                //const updatedUserData = {
-                    //id: response.data.id,
-                    //nombre: response.data.nombre,
-                    //email: response.data.email,
-                    //contrasena: response.data.contrasena,
-                    //telefono: response.data.telefono,
-                //};
-
-                //console.log('Info chofer:', updatedUserData);
-
-
-                //if (response.data.contrasena === contrasena) {
-                    //navigate('/principal-chofer');
-                //} else {
-                    //setError('Contraseña incorrecta.');
-                //}
             }
         } catch (error) {
             console.error('Error al enviar datos:', error);
