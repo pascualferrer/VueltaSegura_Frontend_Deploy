@@ -9,7 +9,7 @@ import { AuthContext } from "../auth/AuthContext";
 import "./principal.css"
 
 const PrincipalUsuario = () => {
-    const { token, user } = useContext(AuthContext); // Accede al user desde AuthContext
+    const { token, id, setToken, setID, tipo, nombre, setNombre, setTipo } = useContext(AuthContext); // Accede al user desde AuthContext
     const [msg, setMsg] = useState("");
     const [solicitudes, setSolicitudes] = useState([]);
     const [fecha, setFecha] = useState('');
@@ -21,17 +21,44 @@ const PrincipalUsuario = () => {
     const [isCalendarImageHovered, setIsCalendarImageHovered] = useState(false);
     const [isNuevoViajeImageHovered, setIsNuevoViajeImageHovered] = useState(false);
     const [isChatearImageHovered, setIsChatearImageHovered] = useState(false);
+    const [authorized, setAuthorized] = useState(true); // Estado para controlar la autorización
 
     const [error, setError] = useState('');
     const [show, setShow] = useState([]); // Agregado estado para 'show'
 
-    const config = {
-            'method' : 'get',
-            'url' : `${import.meta.env.VITE_BACKEND_URL}/scope/protectedCliente`,
-            'headers' : {
-                'Authorization' : `Bearer ${token}`
-            } 
-        }
+        useEffect(() => {
+            console.log("ID:", id)
+            console.log("Tipo:", tipo)
+            console.log("Nombre:", nombre)
+            console.log("Token:", token)
+            // Verifica si el usuario es un cliente antes de realizar la solicitud
+            if (tipo === "cliente") {
+                const config = {
+                    method: 'get',
+                    url: `${import.meta.env.VITE_BACKEND_URL}/scope/protectedCliente`,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                };
+                axios(config)
+                    .then((response) => {
+                        console.log("weno cliente");
+                        console.log(response);
+                        setMsg(response.data.message);
+                        setAuthorized(true);
+                    })
+                    .catch((error) => {
+                        console.log("nao nao");
+                        console.log(error);
+                        setMsg(error.message);
+                    });
+            } else {
+                // Si el usuario no es un cliente, establecer un mensaje de error o redirigir
+                setMsg("No se ha registrado como cliente");
+                console.log("No se ha registrado");
+                setAuthorized(false);
+            }
+        }, [token, id]);
 
         useEffect(() => {
         const handleShow = async () => { //* Para ver los servicios del cliente
@@ -97,167 +124,172 @@ return (
         <nav className="navbar">
             <NavBar />
         </nav>
-
-        <div className="OpcionesContainer">
-            <h1>Seleccione qué desea hacer</h1>
-            <div className="boxContainer">
-                <div className="box" onClick={() => setView('agendar')}>
-                    <img 
-                        src={coche} 
-                        alt="viaje" 
-                        onMouseEnter={() => setIsNuevoViajeImageHovered(true)}
-                        onMouseLeave={() => setIsNuevoViajeImageHovered(false)} 
-                        className={isNuevoViajeImageHovered ? 'enlarged' : ''}
-                        />
-                    <h2>Agendar nuevo viaje</h2>
-                </div>
-                <div className="box" onClick={() => setView('solicitudes')}>
-                    <img 
-                        src={calendario} 
-                        alt="disponibilidad" 
-                        onMouseEnter={() => setIsCalendarImageHovered(true)}
-                        onMouseLeave={() => setIsCalendarImageHovered(false)} 
-                        className={isCalendarImageHovered ? 'enlarged' : ''}
-                        />
-                    <h2>Ver mis solicitudes</h2>
-                </div>
-                <div className="box" onClick={() => setView('chat')}>
-                    <img 
-                        src={chat} 
-                        alt="chat" 
-                        onMouseEnter={() => setIsChatearImageHovered(true)}
-                        onMouseLeave={() => setIsChatearImageHovered(false)} 
-                        className={isChatearImageHovered ? 'enlarged' : ''}
-                        />
-                    <h2>Chatear</h2>
+        {!authorized ? (
+            <h1>
+                Debe iniciar sesión o registrarse.
+            </h1>
+        ) : (
+            <>
+            <div className="OpcionesContainer">
+                <h1>Seleccione qué desea hacer</h1>
+                <div className="boxContainer">
+                    <div className="box" onClick={() => setView('agendar')}>
+                        <img 
+                            src={coche} 
+                            alt="viaje" 
+                            onMouseEnter={() => setIsNuevoViajeImageHovered(true)}
+                            onMouseLeave={() => setIsNuevoViajeImageHovered(false)} 
+                            className={isNuevoViajeImageHovered ? 'enlarged' : ''}
+                            />
+                        <h2>Agendar nuevo viaje</h2>
+                    </div>
+                    <div className="box" onClick={() => setView('solicitudes')}>
+                        <img 
+                            src={calendario} 
+                            alt="disponibilidad" 
+                            onMouseEnter={() => setIsCalendarImageHovered(true)}
+                            onMouseLeave={() => setIsCalendarImageHovered(false)} 
+                            className={isCalendarImageHovered ? 'enlarged' : ''}
+                            />
+                        <h2>Ver mis solicitudes</h2>
+                    </div>
+                    <div className="box" onClick={() => setView('chat')}>
+                        <img 
+                            src={chat} 
+                            alt="chat" 
+                            onMouseEnter={() => setIsChatearImageHovered(true)}
+                            onMouseLeave={() => setIsChatearImageHovered(false)} 
+                            className={isChatearImageHovered ? 'enlarged' : ''}
+                            />
+                        <h2>Chatear</h2>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div className="SeleccionContainer">
-            <div className={view === 'agendar' ? 'info active' : 'info'}>
-                <section className="step">
-                    <form className="from-cliente" onSubmit={handleSubmit}>
-                    <label>
-                    <div>    
-                        Fecha
-                    </div>
-                    <input
-                        type="date"
-                        value={fecha}
-                        onChange={(e) => setFecha(e.target.value)}
-                    />
-                    </label>
-                    <br />
-                    <label>
-                    <div>    
-                        Hora
-                    </div>
-                    <input
-                        type="time"
-                        value={hora}
-                        onChange={(e) => setHora(e.target.value)}
-                    />
-                    </label >
-                    <br />
-                    <label>
-                    <div>    
-                        Origen
-                    </div>
-                    <input
-                        type="text"
-                        value={origen}
-                        onChange={(e) => setOrigen(e.target.value)}
-                    />
-                    </label>
-                    <br />
-                    <label>
-                    <div>    
-                        Destino
-                    </div>
-                    <input
-                        type="text"
-                        value={destino}
-                        onChange={(e) => setDestino(e.target.value)}
-                    />
-                    </label>
-                    <br />
-                    <input type="hidden" name="userType" value="servicio"/>
-                    {error && <div className="error-message">{error}</div>}
-                    <button type="submit">Agendar Solicitud </button>
-                </form>
+            <div className="SeleccionContainer">
+                <div className={view === 'agendar' ? 'info active' : 'info'}>
+                    <section className="step">
+                        <form className="from-cliente" onSubmit={handleSubmit}>
+                        <label>
+                        <div>    
+                            Fecha
+                        </div>
+                        <input
+                            type="date"
+                            value={fecha}
+                            onChange={(e) => setFecha(e.target.value)}
+                        />
+                        </label>
+                        <br />
+                        <label>
+                        <div>    
+                            Hora
+                        </div>
+                        <input
+                            type="time"
+                            value={hora}
+                            onChange={(e) => setHora(e.target.value)}
+                        />
+                        </label >
+                        <br />
+                        <label>
+                        <div>    
+                            Origen
+                        </div>
+                        <input
+                            type="text"
+                            value={origen}
+                            onChange={(e) => setOrigen(e.target.value)}
+                        />
+                        </label>
+                        <br />
+                        <label>
+                        <div>    
+                            Destino
+                        </div>
+                        <input
+                            type="text"
+                            value={destino}
+                            onChange={(e) => setDestino(e.target.value)}
+                        />
+                        </label>
+                        <br />
+                        <input type="hidden" name="userType" value="servicio"/>
+                        {error && <div className="error-message">{error}</div>}
+                        <button type="submit">Agendar Solicitud </button>
+                    </form>
 
 
-                </section>
+                    </section>
 
-            </div>
-            <div className={view === 'solicitudes' ? 'info active' : 'info'}>
-                <section className="step">
-                    <h2>A continuación podrás ver tus solicitudes anteriores</h2>
-                    
-                    {show.length > 0 ? (
-                        <table className='tabla_solicitudes'>
-                            <thead>
-                                <tr>
-                                    <th>Precio</th>
-                                    <th>Tipo</th>
-                                    <th>Hora</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                    <th>Origen</th>
-                                    <th>Destino</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {show.map(servicio => (
-                                    <tr key={servicio.id}>
-                                        <td>{servicio.precio}</td>
-                                        <td>{servicio.tipo}</td>
-                                        <td>{servicio.hora}</td>
-                                        <td>{servicio.fecha}</td>
-                                        <td>{servicio.estado}</td>
-                                        <td>{servicio.origen}</td>
-                                        <td>{servicio.destino}</td>
+                </div>
+                <div className={view === 'solicitudes' ? 'info active' : 'info'}>
+                    <section className="step">
+                        <h2>A continuación podrás ver tus solicitudes anteriores</h2>
+                        
+                        {show.length > 0 ? (
+                            <table className='tabla_solicitudes'>
+                                <thead>
+                                    <tr>
+                                        <th>Precio</th>
+                                        <th>Tipo</th>
+                                        <th>Hora</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Origen</th>
+                                        <th>Destino</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No hay solicitudes anteriores.</p>
-                    )}
-                </section>
+                                </thead>
+                                <tbody>
+                                    {show.map(servicio => (
+                                        <tr key={servicio.id}>
+                                            <td>{servicio.precio}</td>
+                                            <td>{servicio.tipo}</td>
+                                            <td>{servicio.hora}</td>
+                                            <td>{servicio.fecha}</td>
+                                            <td>{servicio.estado}</td>
+                                            <td>{servicio.origen}</td>
+                                            <td>{servicio.destino}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No hay solicitudes anteriores.</p>
+                        )}
+                    </section>
+                </div>
+
+                <div className={view === 'chat' ? 'info active' : 'info'}>
+                    <section className="step">
+                        <h2>Selecciona con quién quieres hablar</h2>
+                        <Link to="/chat_admin">
+                            <button className='chat_admin'>
+                                Administrador
+                            </button>
+                        </Link>
+                        <Link to="/chat_chofer">
+                            <button className='chat_chofer'>
+                                Chofer
+                            </button>
+                        </Link>
+                        <h2>También puedes intentar</h2>
+                        <Link to="/faq">
+                            <button className='preguntas_frecuentes'>
+                                Preguntas frecuentes
+                            </button>
+                        </Link>
+
+                    </section>
+                </div>
             </div>
 
-            <div className={view === 'chat' ? 'info active' : 'info'}>
-                <section className="step">
-                    <h2>Selecciona con quién quieres hablar</h2>
-                    <Link to="/chat_admin">
-                        <button className='chat_admin'>
-                            Administrador
-                        </button>
-                    </Link>
-                    <Link to="/chat_chofer">
-                        <button className='chat_chofer'>
-                            Chofer
-                        </button>
-                    </Link>
-                    <h2>También puedes intentar</h2>
-                    <Link to="/faq">
-                        <button className='preguntas_frecuentes'>
-                            Preguntas frecuentes
-                        </button>
-                    </Link>
-
-                </section>
-            </div>
-        </div>
-
+            </>
+        )}
         <footer>
             <p>Derechos de autor &copy; 2023 Vuelta Segura</p>
         </footer>
-
     </div>
 );
 };
-
 export default PrincipalUsuario;

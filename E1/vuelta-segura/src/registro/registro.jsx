@@ -68,6 +68,7 @@ const Registro = () => {
                         const userData = {
                             id: log.data.id,
                             nombre: log.data.nombre,
+                            tipo: log.data.tipo
                         };
                         console.log('userData:', userData);
                         setUser(userData);

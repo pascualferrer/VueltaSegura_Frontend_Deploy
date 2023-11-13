@@ -4,8 +4,8 @@ import "./navbar.css";
 import { AuthContext } from "../auth/AuthContext";
 
 function NavBar() {
-    const { user , logout} = useContext(AuthContext);
-    console.log(user.id);
+    const { user , logout, id, nombre} = useContext(AuthContext);
+    console.log(id);
     return (
         <nav>
             <ul className='contenedor'>
@@ -18,7 +18,7 @@ function NavBar() {
                     <li><a href="/quienes-somos">Quiénes somos</a></li>
                 </div>
                 <div className="derecha">
-                    {user.id === undefined ? (
+                    {id === "null" ? (
                         // Si hay un usuario, mostrar el nombre y un enlace para cerrar sesión
                         <>
                             <li><a href="/#log-in">Iniciar Sesión</a></li>
@@ -27,7 +27,7 @@ function NavBar() {
                     ) : (
                         // Si no hay un usuario, mostrar los enlaces de inicio de sesión y registro
                         <>
-                            <li><a href="/">Perfil de {user.nombre}</a></li> 
+                            <li><a href="/">Perfil de {nombre}</a></li> 
                             <li><a href="/" onClick={logout}>Cerrar Sesión</a></li>
                         </>
                     )}
