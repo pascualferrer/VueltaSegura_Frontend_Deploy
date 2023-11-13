@@ -65,7 +65,7 @@ const PrincipalUsuario = () => {
             //? Ver ClienteCheck?
             try {
                 const show = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/servicios/buscar-por-id`, {
-                        params: { clienteID: user.id },
+                        params: { clienteID: id },
                     });
                     console.log('Tabla:', show.data);
                     setError(null);
@@ -95,7 +95,7 @@ const PrincipalUsuario = () => {
         const userType = e.target.userType.value;
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/servicios`, {
-                clienteID: user.id,
+                clienteID: id,
                 fecha,
                 estado: "Por confirmar",
                 hora,
