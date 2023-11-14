@@ -12,6 +12,8 @@ import { AuthContext } from "../auth/AuthContext";
 function PrincipalChofer() {
     const { token, id, setToken, setID, tipo, nombre, setNombre, setTipo } = useContext(AuthContext); // Accede al user desde AuthContext
     const [msg, setMsg] = useState("");
+    const [servicios, setServicios] = useState([]);
+    const [serviciosConNombres, setServiciosConNombres] = useState([]);
 
     const [view, setView] = useState('');
     const [isCalendarImageHovered, setIsCalendarImageHovered] = useState(false);
@@ -23,6 +25,7 @@ function PrincipalChofer() {
     const [error, setError] = useState('');
     const [show, setShow] = useState([]); // Agregado estado para 'show'
 
+    //* Mantener sesión
     useEffect(() => {
         console.log("ID:", id)
         console.log("Tipo:", tipo)
@@ -30,6 +33,7 @@ function PrincipalChofer() {
         console.log("Token:", token)
         // Verifica si el usuario es un chofer antes de realizar la solicitud
         if (tipo === "chofer") {
+            console.log(token);
             const config = {
                 method: 'get',
                 url: `${import.meta.env.VITE_BACKEND_URL}/scope/protectedChofer`,
@@ -37,6 +41,7 @@ function PrincipalChofer() {
                     'Authorization': `Bearer ${token}`
                 }
             };
+            console.log(config);
             axios(config)
                 .then((response) => {
                     console.log("weno chofer");
@@ -57,6 +62,49 @@ function PrincipalChofer() {
         }
     }, [token, id]);
 
+    //* Ver viajes disponibles
+    useEffect(() => {
+        // Hacer la solicitud para obtener los servicios disponibles
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/servicios/all`)
+            .then(response => {
+                // Iterar sobre los servicios y obtener información adicional
+                const serviciosPromises = response.data.map(servicio => {
+                    const url = `${import.meta.env.VITE_BACKEND_URL}/clientes/${servicio.clienteID}`;
+                    return axios.get(url, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    .then(cliente => {
+                        console.log("cliente", cliente.data.nombre);
+                        // Crear un nuevo objeto con la información del servicio y el nombre del cliente
+                        return {
+                            ...servicio,
+                            nombreCliente: cliente.data.nombre,
+                        };
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener información del cliente:', error);
+                        return null; // Manejar el error aquí, por ejemplo, podrías asignar un nombre predeterminado
+                    });
+                });
+                // Una vez que todas las solicitudes hayan terminado, actualiza el estado
+                Promise.all(serviciosPromises)
+                    .then(serviciosConNombres => {
+                        // Filtra servicios que puedan ser null (por errores)
+                        const serviciosValidos = serviciosConNombres.filter(servicio => servicio !== null);
+                        console.log('Nombres de clientes:', serviciosValidos.map(servicio => servicio.nombreCliente));
+                        setServiciosConNombres(serviciosValidos);
+                        console.log("servicio", serviciosConNombres);
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener información del cliente:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Error al obtener servicios:', error);
+            });
+    }, []);
     
     return (
         <div className="contenedor_principal">
@@ -108,61 +156,31 @@ function PrincipalChofer() {
                 <div className="SeleccionContainer">
                 <div className={view === 'disponibilidad' ? 'info active' : 'info'}>
                     <section className="step">
-                        <h2>Seleccione los días de la semana en los que esté disponible</h2>
-                        <div className="dias-semana">
-                            <label className='label'>
-                                <input type="checkbox" name="lunes" /> Lunes
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-lun" className="hora"/>
-                                Fin <input type="time" id="fin-lun" className="hora"/>
-                            </label>
-                            <label className='label'>
-                                <input type="checkbox" name="martes" /> Martes
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-mar" className="hora"/>
-                                Fin <input type="time" id="fin-mar" className="hora"/>
-                            </label>
-                            <label className='label'>
-                                <input type="checkbox" name="miercoles" /> Miércoles
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-mie" className="hora"/>
-                                Fin <input type="time" id="fin-mie" className="hora"/>
-                            </label>
-                            <label className='label'>
-                                <input type="checkbox" name="jueves" /> Jueves
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-jue" className="hora"/>
-                                Fin <input type="time" id="fin-jue" className="hora"/>
-                            </label>
-                            <label className='label'>
-                                <input type="checkbox" name="viernes" /> Viernes
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-vie" className="hora"/>
-                                Fin <input type="time" id="fin-vie" className="hora"/>
-                            </label>
-                            <label className='label'>
-                                <input type="checkbox" name="sabado" /> Sábado
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-sab" className="hora"/>
-                                Fin <input type="time" id="fin-sab" className="hora"/>
-                            </label>
-                            <label className='label'>
-                                <input type="checkbox" name="domingo" /> Domingo
-                                <br></br>
-                                <br></br>
-                                Inicio <input type="time" id="inicio-dom" className="hora"/>
-                                Fin <input type="time" id="fin-dom" className="hora"/>
-                            </label>
-                        </div>
-                        <button className='enviar'>
-                            Enviar preferencias
-                        </button>
+                        <h2>Viajes disponibles</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre de cliente</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Hora de partida</th>
+                                    <th>Fecha</th>
+                                    {/* Agrega más campos según la estructura de tu servicio */}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {serviciosConNombres.map(servicio => (
+                                    <tr key={servicio.id}>
+                                        <td>{servicio.nombreCliente}</td>
+                                        <td>{servicio.origen}</td>
+                                        <td>{servicio.destino}</td>
+                                        <td>{servicio.hora}</td>
+                                        <td>{servicio.fecha}</td>
+                                        {/* Agrega más celdas según la estructura de tu servicio */}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </section>
                     </div>
 
