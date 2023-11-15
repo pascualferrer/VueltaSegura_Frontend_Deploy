@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import logo from '../assets/logo.png';
 import "./navbar.css";
-import { useUser } from '../UserContext';
+import { AuthContext } from "../auth/AuthContext";
 
 function NavBar() {
-    const { user, logout } = useUser();
-
+    const { user , logout, id, nombre} = useContext(AuthContext);
+    console.log(id);
     return (
         <nav>
             <ul className='contenedor'>
@@ -18,17 +18,18 @@ function NavBar() {
                     <li><a href="/quienes-somos">Quiénes somos</a></li>
                 </div>
                 <div className="derecha">
-                    {user ? (
-                        // Si hay un usuario, mostrar el nombre y un enlace para cerrar sesión
-                        <>
-                            <li><a href="/">Perfil de {user.nombre}</a></li> 
-                            <li><a href="/" onClick={logout}>Cerrar Sesión</a></li>
-                        </>
-                    ) : (
-                        // Si no hay un usuario, mostrar los enlaces de inicio de sesión y registro
+                    {id === "null" ? (
+                        // Si no hay un usuario, mostrar el nombre y un enlace para cerrar sesión
                         <>
                             <li><a href="/#log-in">Iniciar Sesión</a></li>
-                            <li><a href="/clientes/registro">Crear Cuenta</a></li>
+                            <li><a href="/registro">Crear Cuenta</a></li>
+                            <li><a href="/registroAdmin">¿Eres Administrador?</a></li>
+                        </>
+                    ) : (
+                        // Si hay un usuario, mostrar los enlaces de inicio de sesión y registro
+                        <>
+                            <li><a href="/">Perfil de {nombre}</a></li> 
+                            <li><a href="/" onClick={logout}>Cerrar Sesión</a></li>
                         </>
                     )}
                 </div>
