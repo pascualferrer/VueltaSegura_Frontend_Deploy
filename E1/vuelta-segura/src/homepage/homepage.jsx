@@ -53,6 +53,7 @@ function HomePage() {
 
     console.log(id, tipo);
 
+    //* Hacer login
     const handleLogin = async (e) => {
         e.preventDefault();
 

@@ -16,9 +16,8 @@ import nosotros2 from '../assets/nosotros2.jpg';
 import nosotros3 from '../assets/nosotros3.jpg';
 
 const Registro = () => {
-    const {token, setToken, user, setUser} = useContext(AuthContext);
+    const {token, setToken, id, setID, nombre, setNombre, tipo, setTipo } = useContext(AuthContext);
 
-    const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [telefono, setTelefono] = useState('');
@@ -64,6 +63,7 @@ const Registro = () => {
                     }).then((log) => {
                         const access_token = log.data.access_token;
                         setToken(access_token);
+                        console.log('Token2:', access_token);
                         console.log('Datos enviados con éxito:', log);
                         const userData = {
                             id: log.data.id,
@@ -71,8 +71,9 @@ const Registro = () => {
                             tipo: log.data.tipo
                         };
                         console.log('userData:', userData);
-                        setUser(userData);
-                        navigate('/principal-cliente');
+                        setID(log.data.id);
+                        setNombre(log.data.nombre);
+                        setTipo(log.data.tipo);
                     }).catch((error) => {
                         console.log(error);
                     })
