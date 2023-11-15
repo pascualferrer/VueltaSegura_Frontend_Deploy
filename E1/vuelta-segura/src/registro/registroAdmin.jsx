@@ -56,17 +56,15 @@ const RegistroAdmin = () => {
                     console.log('userData:', userData);
                     setID(response.data.id);
                     setNombre(response.data.nombre);
-                    setTipo(response.data.tipo)
+                    setTipo(response.data.tipo);
+                    if (setError != null) {
+                        navigate('/principal-admin');
+                        }
                 }).catch((error) => {
                     console.log(error);
                 })
 
             setError(null);
-
-            //* Redirigir  después de un registro exitoso y sin errores
-            if (setError != null) {
-                navigate('/principal-admin');
-                }
 
         } catch (error) {
             console.error('Error al enviar datos:', error);
