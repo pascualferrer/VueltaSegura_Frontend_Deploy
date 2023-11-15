@@ -19,13 +19,14 @@ function NavBar() {
                 </div>
                 <div className="derecha">
                     {id === "null" ? (
-                        // Si hay un usuario, mostrar el nombre y un enlace para cerrar sesión
+                        // Si no hay un usuario, mostrar el nombre y un enlace para cerrar sesión
                         <>
                             <li><a href="/#log-in">Iniciar Sesión</a></li>
                             <li><a href="/registro">Crear Cuenta</a></li>
+                            <li><a href="/registroAdmin">¿Eres Administrador?</a></li>
                         </>
                     ) : (
-                        // Si no hay un usuario, mostrar los enlaces de inicio de sesión y registro
+                        // Si hay un usuario, mostrar los enlaces de inicio de sesión y registro
                         <>
                             <li><a href="/">Perfil de {nombre}</a></li> 
                             <li><a href="/" onClick={logout}>Cerrar Sesión</a></li>

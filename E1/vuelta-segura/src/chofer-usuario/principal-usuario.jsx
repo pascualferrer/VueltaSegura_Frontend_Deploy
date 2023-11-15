@@ -16,6 +16,7 @@ const PrincipalUsuario = () => {
     const [hora, setHora] = useState('');
     const [origen, setOrigen] = useState('');
     const [destino, setDestino] = useState('');
+    
 
     const [view, setView] = useState('');
     const [isCalendarImageHovered, setIsCalendarImageHovered] = useState(false);
@@ -52,6 +53,29 @@ const PrincipalUsuario = () => {
                         console.log(error);
                         setMsg(error.message);
                     });
+            };
+
+            if (tipo === "cliente" || "admin") {
+                const config2 = {
+                    method: 'get',
+                    url: `${import.meta.env.VITE_BACKEND_URL}/scope/protectedServicioCliente`,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                        }
+                };
+                console.log(config2);
+                axios(config2)
+                    .then((response) => {
+                        console.log("weno servicio authorized");
+                        console.log(response);
+                        setMsg(response.data.message);
+                        setAuthorized(true);
+                    })
+                    .catch((error) => {
+                        console.log("nao nao");
+                        console.log(error);
+                        setMsg(error.message);
+                    });
             } else {
                 // Si el usuario no es un cliente, establecer un mensaje de error o redirigir
                 setMsg("No se ha registrado como cliente");
@@ -60,28 +84,34 @@ const PrincipalUsuario = () => {
             }
         }, [token, id]);
 
+        //* Ver los servicios del cliente
         useEffect(() => {
-        const handleShow = async () => { //* Para ver los servicios del cliente
-            //? Ver ClienteCheck?
-            try {
-                const show = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/servicios/buscar-por-id`, {
-                        params: { clienteID: id },
-                    });
+            const handleShow = async () => {
+                try {
+                    const show = await axios.get(
+                        `${import.meta.env.VITE_BACKEND_URL}/servicios/buscar-por-id`, 
+                        {
+                            params: { clienteID: id },
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            },
+                        }
+                    );
                     console.log('Tabla:', show.data);
                     setError(null);
                     setShow(show.data);
-    
-            } catch (error) {
-                console.error('Error al enviar datos:', error);
-                setError('Error al enviar datos.');
+                } catch (error) {
+                    console.error('Error al enviar datos:', error);
+                    setError('Error al enviar datos.');
+                }
+            };
+            if (view === 'solicitudes') {
+                handleShow();
             }
-        };
-        if (view === 'solicitudes') {
-            handleShow();
-        }
-    }, [view]);
+        }, [view]);
 
-    const handleSubmit = async (e) => { //* Para crear servicios
+    //* Crear servicios
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!fecha || !hora || !origen || !destino) {
@@ -91,9 +121,7 @@ const PrincipalUsuario = () => {
             return;
         }
 
-
-        const userType = e.target.userType.value;
-        try {
+        try {            
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/servicios`, {
                 clienteID: id,
                 fecha,
@@ -101,8 +129,12 @@ const PrincipalUsuario = () => {
                 hora,
                 origen,
                 destino
-            }
-            );
+            }, 
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             console.log('Datos enviados con éxito:', response.data);
             setError(null);

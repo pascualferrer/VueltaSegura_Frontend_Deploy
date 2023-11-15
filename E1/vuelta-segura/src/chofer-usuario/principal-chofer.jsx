@@ -14,6 +14,7 @@ function PrincipalChofer() {
     const [msg, setMsg] = useState("");
     const [servicios, setServicios] = useState([]);
     const [serviciosConNombres, setServiciosConNombres] = useState([]);
+    const [historialServicios, setHistorialServicios] = useState([]);
 
     const [view, setView] = useState('');
     const [isCalendarImageHovered, setIsCalendarImageHovered] = useState(false);
@@ -54,6 +55,28 @@ function PrincipalChofer() {
                     console.log(error);
                     setMsg(error.message);
                 });
+        };
+        if (tipo === "chofer" || "admin") {
+            const config2 = {
+                method: 'get',
+                url: `${import.meta.env.VITE_BACKEND_URL}/scope/protectedServicioChofer`,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            console.log(config2);
+            axios(config2)
+                .then((response) => {
+                    console.log("weno chofer");
+                    console.log(response);
+                    setMsg(response.data.message);
+                    setAuthorized(true);
+                })
+                .catch((error) => {
+                    console.log("nao nao");
+                    console.log(error);
+                    setMsg(error.message);
+                });
         } else {
             // Si el usuario no es un cliente, establecer un mensaje de error o redirigir
             setMsg("No se ha registrado como chofer");
@@ -65,28 +88,39 @@ function PrincipalChofer() {
     //* Ver viajes disponibles
     useEffect(() => {
         // Hacer la solicitud para obtener los servicios disponibles
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/servicios/all`)
+        const all = {
+            method: 'get',
+            url: `${import.meta.env.VITE_BACKEND_URL}/servicios/all`,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+        axios(all)
             .then(response => {
                 // Iterar sobre los servicios y obtener información adicional
                 const serviciosPromises = response.data.map(servicio => {
-                    const url = `${import.meta.env.VITE_BACKEND_URL}/clientes/${servicio.clienteID}`;
-                    return axios.get(url, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                    .then(cliente => {
-                        console.log("cliente", cliente.data.nombre);
-                        // Crear un nuevo objeto con la información del servicio y el nombre del cliente
-                        return {
-                            ...servicio,
-                            nombreCliente: cliente.data.nombre,
-                        };
-                    })
-                    .catch(error => {
-                        console.error('Error al obtener información del cliente:', error);
-                        return null; // Manejar el error aquí, por ejemplo, podrías asignar un nombre predeterminado
-                    });
+                    if (servicio.choferID === null) {
+                        const url = `${import.meta.env.VITE_BACKEND_URL}/clientes/${servicio.clienteID}`;
+                        return axios.get(url, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        })
+                        .then(cliente => {
+                            console.log("cliente", cliente.data.nombre);
+                            // Crear un nuevo objeto con la información del servicio y el nombre del cliente
+                            return {
+                                ...servicio,
+                                nombreCliente: cliente.data.nombre,
+                            };
+                        })
+                        .catch(error => {
+                            console.error('Error al obtener información del cliente:', error);
+                            return null; // Manejar el error aquí, por ejemplo, podrías asignar un nombre predeterminado
+                        });
+                    } else {
+                        return null; // Si el servicio tiene un chofer asignado, devolver null para filtrarlo
+                    }
                 });
                 // Una vez que todas las solicitudes hayan terminado, actualiza el estado
                 Promise.all(serviciosPromises)
@@ -104,7 +138,71 @@ function PrincipalChofer() {
             .catch(error => {
                 console.error('Error al obtener servicios:', error);
             });
-    }, []);
+    }, [view]);
+
+    //* Realizar una solicitud PUT para actualizar choferID y el estado del servicio
+    const handleSeleccionar = (servicioId) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/servicios/${servicioId}`;
+        const data = {
+            choferID: id,
+            estado: "Agendado",
+        };
+        axios.put(url, data, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log('Servicio actualizado con éxito:', response.data);
+            // Después de seleccionar, redirigir a la vista de historial
+            setView('historial');
+        })
+        .catch(error => {
+            console.error('Error al actualizar el servicio:', error);
+        });
+    };
+
+    //* Obtener historial de servicios cuando view es 'historial'
+    useEffect(() => {
+        if (view === 'historial') {
+            const url = `${import.meta.env.VITE_BACKEND_URL}/servicios/historial-chofer`;
+            const config = {
+                params: { choferID: id },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            };
+            axios.get(url, config)
+                .then(response => {
+                    setHistorialServicios(response.data);
+                })
+                .catch(error => {
+                    console.error('Error al obtener historial de servicios:', error);
+                });
+        }
+    }, [view, token]);
+
+    //* Cancelar un viaje
+    const handleCancelService = (servicioId) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/servicios/${servicioId}`;
+        const data = {
+            choferID: null,
+            estado: "Por confirmar", // Puedes ajustar el estado según tus necesidades
+        };
+
+        axios.put(url, data, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log('Servicio cancelado con éxito:', response.data);
+        })
+        .catch(error => {
+            console.error('Error al cancelar el servicio:', error);
+        });
+        setView('disponibilidad');
+    };
     
     return (
         <div className="contenedor_principal">
@@ -165,7 +263,7 @@ function PrincipalChofer() {
                                     <th>Destino</th>
                                     <th>Hora de partida</th>
                                     <th>Fecha</th>
-                                    {/* Agrega más campos según la estructura de tu servicio */}
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,11 +273,23 @@ function PrincipalChofer() {
                                         <td>{servicio.origen}</td>
                                         <td>{servicio.destino}</td>
                                         <td>{servicio.hora}</td>
-                                        <td>{servicio.fecha}</td>
-                                        {/* Agrega más celdas según la estructura de tu servicio */}
+                                        <td>
+                                            {(() => {
+                                            const fecha_original = new Date(servicio.fecha);
+                                            const dia = fecha_original.getDate();
+                                            const mes = fecha_original.getMonth() + 1;
+                                            const ano = fecha_original.getFullYear();
+                                            const fechaFormateada = `${dia}-${mes}-${ano}`;
+                                            return fechaFormateada;
+                                            })()}
+                                        </td>
+                                        <td>{servicio.estado}</td>
+                                        <td>
+                                            <button3 onClick={() => handleSeleccionar(servicio.id)}>Seleccionar</button3>
+                                        </td>
                                     </tr>
                                 ))}
-                            </tbody>
+                                </tbody>
                         </table>
                     </section>
                     </div>
@@ -198,16 +308,31 @@ function PrincipalChofer() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                    <td>Ejemplo</td>
-                                    <td>13-10-2000</td>
-                                    <td>16:20</td>
-                                    <td>San Joaquín</td>
-                                    <td>New York</td>
-                                    </tr>
+                                    {historialServicios.map(servicio => (
+                                        <tr key={servicio.id}>
+                                            <td>{servicio.Cliente.nombre}</td>
+                                            <td>
+                                                {(() => {
+                                                const fecha_original = new Date(servicio.fecha);
+                                                const dia = fecha_original.getDate();
+                                                const mes = fecha_original.getMonth() + 1;
+                                                const ano = fecha_original.getFullYear();
+                                                const fechaFormateada = `${dia}-${mes}-${ano}`;
+                                                return fechaFormateada;
+                                                })()}
+                                            </td>
+                                            <td>{servicio.hora}</td>
+                                            <td>{servicio.origen}</td>
+                                            <td>{servicio.destino}</td>
+                                            <td>
+                                                <button onClick={() => handleCancelService(servicio.id)}>
+                                                    Cancelar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
-                                </table>
-
+                            </table>
                         </section>
                     </div>
 
