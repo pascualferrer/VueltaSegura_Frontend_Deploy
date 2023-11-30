@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import historial from '../assets/historia.png';
 import calendario from '../assets/calendario.png';
-import chat from '../assets/charla.png';
+import star from '../assets/star.png';
 import NavBar from '../navbar/navbar';
 import "./principal.css";
 import { AuthContext } from "../auth/AuthContext";
-
+import { format } from 'date-fns';
 
 function PrincipalChofer() {
     const { token, id, setToken, setID, tipo, nombre, setNombre, setTipo } = useContext(AuthContext); // Accede al user desde AuthContext
@@ -25,6 +25,8 @@ function PrincipalChofer() {
 
     const [error, setError] = useState('');
     const [show, setShow] = useState([]); // Agregado estado para 'show'
+
+    const [evaluaciones, setEvaluaciones] = useState([]);
 
     //* Mantener sesión
     useEffect(() => {
@@ -107,7 +109,6 @@ function PrincipalChofer() {
                             }
                         })
                         .then(cliente => {
-                            console.log("cliente", cliente.data.nombre);
                             // Crear un nuevo objeto con la información del servicio y el nombre del cliente
                             return {
                                 ...servicio,
@@ -127,9 +128,7 @@ function PrincipalChofer() {
                     .then(serviciosConNombres => {
                         // Filtra servicios que puedan ser null (por errores)
                         const serviciosValidos = serviciosConNombres.filter(servicio => servicio !== null);
-                        console.log('Nombres de clientes:', serviciosValidos.map(servicio => servicio.nombreCliente));
                         setServiciosConNombres(serviciosValidos);
-                        console.log("servicio", serviciosConNombres);
                     })
                     .catch(error => {
                         console.error('Error al obtener información del cliente:', error);
@@ -203,6 +202,30 @@ function PrincipalChofer() {
         });
         setView('disponibilidad');
     };
+
+    //* Ver las evaluaciones del chofer
+    useEffect(() => {
+        const choferINT = parseInt(id, 10);
+        if (view === 'evaluacion') {
+            const url = `${import.meta.env.VITE_BACKEND_URL}/evaluaciones/buscar-por-id`;
+            axios.get(url, {
+                params: { choferID: choferINT },
+            })
+            .then(response => {
+                setEvaluaciones(response.data);
+                console.log("response evals:", response.data);
+            })
+            .catch(error => {
+                console.error('Error al obtener evaluaciones del chofer:', error);
+            });
+        }
+    }, [view]);
+
+    //* Cambiar formato de fecha
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return format(date, 'dd-MM-yyyy');
+    };
     
     return (
         <div className="contenedor_principal">
@@ -238,15 +261,15 @@ function PrincipalChofer() {
                                 />
                             <h2>Ver mi historial</h2>
                         </div>
-                        <div className="box" onClick={() => setView('chat')}>
+                        <div className="box" onClick={() => setView('evaluacion')}>
                             <img 
-                                src={chat} 
-                                alt="chat" 
+                                src={star} 
+                                alt="evaluacion" 
                                 onMouseEnter={() => setIsChatearImageHovered(true)}
                                 onMouseLeave={() => setIsChatearImageHovered(false)} 
                                 className={isChatearImageHovered ? 'enlarged' : ''}
                                 />
-                            <h2>Chatear</h2>
+                            <h2>Ver evaluaciones</h2>
                         </div>
                     </div>
                 </div>
@@ -336,21 +359,34 @@ function PrincipalChofer() {
                         </section>
                     </div>
 
-                    <div className={view === 'chat' ? 'info active' : 'info'}>
+                    <div className={view === 'evaluacion' ? 'info active' : 'info'}>
                         <section className="step">
-                            <h2>Selecciona con quién quieres hablar</h2>
-                            <Link to="/chat_admin">
-                                <button className='chat_admin'>
-                                    Administrador
-                                </button>
-                            </Link>
-                            <Link to="/chat_usuario">
-                                <button className='chat_usuarior'>
-                                    Cliente
-                                </button>
-                            </Link>
-
-                        </section>
+                        <h2>Evaluaciones recibidas</h2>
+                            {evaluaciones.length > 0 ? (
+                                <table className='tabla_evaluaciones'>
+                                    <thead>
+                                        <tr>
+                                            <th>ID de la evaluación</th>
+                                            <th>Cliente</th>
+                                            <th>Fecha de Creación</th>
+                                            <th>Puntuación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {evaluaciones.map(evaluacion => (
+                                            <tr key={evaluacion.id}>
+                                                <td>{evaluacion.id}</td>
+                                                <td>{evaluacion.Cliente ? evaluacion.Cliente.nombre : 'Nombre no disponible'}</td>
+                                                <td>{formatDate(evaluacion.createdAt)}</td>
+                                                <td>{evaluacion.calificacion}/5</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p>No hay evaluaciones recibidas.</p>
+                            )}
+                    </section>
                     </div>
                 </div>
             </>

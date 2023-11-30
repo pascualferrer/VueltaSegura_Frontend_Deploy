@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import coche from '../assets/coche.png';
 import calendario from '../assets/calendario.png';
-import chat from '../assets/charla.png';
+import star from '../assets/star.png';
 import NavBar from '../navbar/navbar';
 import { AuthContext } from "../auth/AuthContext";
 import "./principal.css"
+import { format } from 'date-fns';
 
 const PrincipalUsuario = () => {
     const { token, id, setToken, setID, tipo, nombre, setNombre, setTipo } = useContext(AuthContext); // Accede al user desde AuthContext
@@ -26,6 +27,9 @@ const PrincipalUsuario = () => {
 
     const [error, setError] = useState('');
     const [show, setShow] = useState([]); // Agregado estado para 'show'
+
+    const [servicios, setServicios] = useState([]); // Inicializar como array vacío
+    const [puntuaciones, setPuntuaciones] = useState({});
 
         useEffect(() => {
             console.log("ID:", id)
@@ -151,6 +155,86 @@ const PrincipalUsuario = () => {
         }
     };
 
+    //* Obtener servicios confirmados al cargar la página o cambiar a la vista 'evaluar'
+    useEffect(() => {
+        if (view === 'evaluar') {
+        obtenerServiciosConfirmados();
+        }
+    }, [view]);
+
+    //* Función para obtener servicios confirmados
+    const obtenerServiciosConfirmados = () => {
+        // Hacer la solicitud para obtener los servicios con estado "Agendado"
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/servicios/agendados`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+        })
+        .then(response => {
+            console.log("Servicio confirmed", response.data);
+            setServicios(response.data);
+        })
+        .catch(error => {
+            console.error('Error al obtener servicios agendados:', error);
+        });
+    };
+
+    //* Evaluar el servicio (crear evaluación)
+    const enviarEvaluacion = async (servicioId, puntuacion) => {
+        try {
+
+            //* Obtenemos la información del servicio, incluido el ID del chofer
+            const servicioResponse = await axios.get(
+                `${import.meta.env.VITE_BACKEND_URL}/servicios/${servicioId}`,
+                {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    },
+                }
+            );
+            const chofer = servicioResponse.data.choferID;
+            console.log("response:", servicioResponse);
+            console.log("id chofer eval:", chofer);
+
+            //* Convertir clienteID a entero
+            const clienteIDInt = parseInt(id, 10);
+
+            const response = await axios.post(
+              `${import.meta.env.VITE_BACKEND_URL}/evaluaciones`, // Reemplaza '/evaluaciones' con tu ruta real
+                {
+                    clienteID: clienteIDInt,
+                    choferID: chofer,
+                    comentario: "Puntuación enviada correctamente a la base de datos",
+                    calificacion: puntuacion
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            console.log('Evaluación enviada con éxito:', response.data);
+            setServicios(prevServicios => prevServicios.filter(servicio => servicio.id !== servicioId));
+            setView('agendar');
+            setView('evaluar');
+        } catch (error) {
+            console.error('Error al enviar la evaluación:', error.response.data);
+        }
+    };
+
+    //* Cambiar formato de fecha
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return format(date, 'dd-MM-yyyy');
+    };
+
+    const setPuntuacionServicio = (servicioId, puntuacion) => {
+        setPuntuaciones(prevState => ({
+            ...prevState,
+            [servicioId]: puntuacion
+        }));
+    };
+
 return (
     <div className="contenedor_principal">
         <nav className="navbar">
@@ -185,15 +269,15 @@ return (
                             />
                         <h2>Ver mis solicitudes</h2>
                     </div>
-                    <div className="box" onClick={() => setView('chat')}>
+                    <div className="box" onClick={() => setView('evaluar')}>
                         <img 
-                            src={chat} 
-                            alt="chat" 
+                            src={star} 
+                            alt="evaluacion" 
                             onMouseEnter={() => setIsChatearImageHovered(true)}
                             onMouseLeave={() => setIsChatearImageHovered(false)} 
                             className={isChatearImageHovered ? 'enlarged' : ''}
                             />
-                        <h2>Chatear</h2>
+                        <h2>Evaluar</h2>
                     </div>
                 </div>
             </div>
@@ -291,27 +375,54 @@ return (
                         )}
                     </section>
                 </div>
-
-                <div className={view === 'chat' ? 'info active' : 'info'}>
+                <div className={view === 'evaluar' ? 'info active' : 'info'}>
                     <section className="step">
-                        <h2>Selecciona con quién quieres hablar</h2>
-                        <Link to="/chat_admin">
-                            <button className='chat_admin'>
-                                Administrador
-                            </button>
-                        </Link>
-                        <Link to="/chat_chofer">
-                            <button className='chat_chofer'>
-                                Chofer
-                            </button>
-                        </Link>
-                        <h2>También puedes intentar</h2>
-                        <Link to="/faq">
-                            <button className='preguntas_frecuentes'>
-                                Preguntas frecuentes
-                            </button>
-                        </Link>
-
+                    <h2>Evaluar servicios confirmados</h2>
+                    {servicios.length > 0 ? (
+                        <div>
+                        <p>Selecciona la puntuación para cada servicio:</p>
+                        <table className='tabla_servicios'>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {servicios.map(servicio => (
+                                <tr key={servicio.id}>
+                                <td>{servicio.id}</td>
+                                <td>{formatDate(servicio.fecha)}</td>
+                                <td>{servicio.hora}</td>
+                                <td>{servicio.origen}</td>
+                                <td>{servicio.destino}</td>
+                                <td>
+                                    <select
+                                    value={puntuaciones[servicio.id] || 0}
+                                    onChange={e => setPuntuacionServicio(servicio.id, Number(e.target.value))}
+                                    >
+                                    {[0, 1, 2, 3, 4, 5].map(valor => (
+                                        <option key={valor} value={valor}>
+                                        {valor}
+                                        </option>
+                                    ))}
+                                    </select>
+                                    <button className="evaluar-button" onClick={() => enviarEvaluacion(servicio.id, puntuaciones[servicio.id])}>
+                                        Evaluar
+                                    </button>
+                                </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                        </div>
+                    ) : (
+                        <p>No hay servicios confirmados para evaluar.</p>
+                    )}
                     </section>
                 </div>
             </div>

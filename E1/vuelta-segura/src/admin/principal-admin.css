@@ -173,3 +173,28 @@ button3 {
 button:hover {
   background-color: #45a049;
 }
+
+/* Estilo específico para la columna de fechas */
+.tabla_solicitudes td:nth-child(4) {
+  white-space: nowrap;
+}
+
+/* Resto de estilos */
+.tabla_solicitudes {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tabla_solicitudes th, .tabla_solicitudes td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.tabla_solicitudes th {
+  background-color: #333;
+  color: white;
+}
+
+

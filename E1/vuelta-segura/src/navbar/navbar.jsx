@@ -28,7 +28,7 @@ function NavBar() {
                     ) : (
                         // Si hay un usuario, mostrar los enlaces de inicio de sesión y registro
                         <>
-                            <li><a href="/">Perfil de {nombre}</a></li> 
+                            <li>Perfil de {nombre}</li> 
                             <li><a href="/" onClick={logout}>Cerrar Sesión</a></li>
                         </>
                     )}

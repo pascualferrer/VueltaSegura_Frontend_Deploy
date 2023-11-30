@@ -15,6 +15,7 @@ function PrincipalAdmin() {
     const [editingIndex, setEditingIndex] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [editingIndexServicio, setEditingIndexServicio] = useState(null);
+    const [editingIndexEvaluacion, setEditingIndexEvaluacion] = useState(null);
 
     //* Mantener sesión
     useEffect(() => {
@@ -143,6 +144,23 @@ function PrincipalAdmin() {
         });
     };
 
+    //* Obtener todos los resultados de evaluaciones
+    const loadEvaluacionesData = () => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/evaluaciones/all`;
+        axios.get(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+        })
+        .then(response => {
+        const sortedData = response.data.sort((a, b) => a.id - b.id);
+        setEntityData(response.data);
+        })
+        .catch(error => {
+        console.error('Error al obtener datos de evaluaciones:', error);
+        });
+    };
+
     ///* Para editar choferes o clientes
     const handleInputChange = (e, index, field) => {
         const newValue = e.target.value;
@@ -213,6 +231,47 @@ function PrincipalAdmin() {
         })
         .catch(error => {
             console.error(`Error al eliminar registro en ${selectedEntity}:`, error);
+        });
+    };
+
+    //* Editar una evaluación
+    const handleEditEvaluacion = (evaluacionId, index) => {
+        setEditingIndexEvaluacion(index);
+    };
+
+    //* Guardar cambios de una evaluación
+    const handleSaveEditEvaluacion = (evaluacionId) => {
+        const updatedEvaluacion = entityData[editingIndexEvaluacion];
+        const url = `${import.meta.env.VITE_BACKEND_URL}/evaluaciones/${evaluacionId}`;
+        axios.put(url, updatedEvaluacion, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+        })
+        .then(response => {
+        console.log('Evaluación actualizada con éxito:', response.data);
+        setEditingIndexEvaluacion(null);
+        loadEvaluacionesData();
+        })
+        .catch(error => {
+        console.error('Error al actualizar la evaluación:', error);
+        });
+    };
+
+    //* Borrar una evaluación
+    const handleDeleteEvaluacion = (evaluacionId) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/evaluaciones/${evaluacionId}`;
+        axios.delete(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+        })
+        .then(response => {
+        loadEvaluacionesData();
+        console.log(`Evaluación con ID ${evaluacionId} eliminada con éxito`);
+        })
+        .catch(error => {
+        console.error(`Error al eliminar la evaluación:`, error);
         });
     };
 
@@ -381,7 +440,55 @@ function PrincipalAdmin() {
                             </tbody>
                         </>
                     );
-                //TODO: agregar para evaluaciones y chats
+                    case 'evaluaciones':
+                        return (
+                            <>
+                                <thead>
+                                <tr>
+                                    <th>ID de la evaluación</th>
+                                    <th>ID del cliente</th>
+                                    <th>ID del chofer</th>
+                                    <th>Calificación</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {entityData.map((evaluacion, index) => (
+                                    <tr key={evaluacion.id}>
+                                    <td>{evaluacion.id}</td>
+                                    <td>
+                                        {index === editingIndexEvaluacion ? (
+                                        <input type="text" value={evaluacion.clienteID} onChange={(e) => handleInputChange(e, index, 'clienteID')} />
+                                        ) : (
+                                        evaluacion.clienteID
+                                        )}
+                                    </td>
+                                    <td>
+                                        {index === editingIndexEvaluacion ? (
+                                        <input type="text" value={evaluacion.choferID} onChange={(e) => handleInputChange(e, index, 'choferID')} />
+                                        ) : (
+                                        evaluacion.choferID
+                                        )}
+                                    </td>
+                                    <td>
+                                        {index === editingIndexEvaluacion ? (
+                                        <input type="text" value={evaluacion.calificacion} onChange={(e) => handleInputChange(e, index, 'calificacion')} />
+                                        ) : (
+                                        evaluacion.calificacion
+                                        )}
+                                    </td>
+                                    <td>
+                                        {index === editingIndexEvaluacion ? (
+                                        <button onClick={() => handleSaveEditEvaluacion(evaluacion.id)}>Guardar</button>
+                                        ) : (
+                                        <button onClick={() => handleEditEvaluacion(evaluacion.id, index)}>Editar</button>
+                                        )}
+                                        <button onClick={() => handleDeleteEvaluacion(evaluacion.id)}>Borrar</button>
+                                    </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </>
+                            );
             default:
                 return null;
         }
@@ -398,7 +505,6 @@ function PrincipalAdmin() {
                         <button onClick={() => handleEntitySelection('choferes')}>Choferes</button>
                         <button onClick={() => handleEntitySelection('evaluaciones')}>Evaluaciones</button>
                         <button onClick={() => handleEntitySelection('servicios')}>Servicios</button>
-                        <button onClick={() => handleEntitySelection('chats')}>Chats</button>
                     </div>
                     {selectedEntity && (
                         <div>
